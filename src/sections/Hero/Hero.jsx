@@ -1,7 +1,8 @@
 import './Hero.css'
 import { useEffect, useMemo, useRef } from 'react'
 import { gsap } from '../../lib/gsap'
-import Lanyard from '../../components/Lanyard/Lanyard'
+import ProfileCard from '../../components/ProfileCard/ProfileCard'
+import avatar from '../../assets/marc.png'
 
 export default function Hero() {
   const h1Ref = useRef(null)
@@ -26,8 +27,8 @@ export default function Hero() {
   }, [])
 
   return (
-    <section className="hero hero--layout container">
-      <div className="hero__copy">
+    <div className="container hero hero--with-card">
+      <div className="hero__col">
         <h1 ref={h1Ref} className="hero__title" aria-label={title}>
           {titleWords.map((w, i) => (
             <span className="word-wrap" key={i}>
@@ -37,15 +38,25 @@ export default function Hero() {
             </span>
           ))}
         </h1>
-
-        <p ref={pRef} className="hero__subtitle">
-          {subtitle}
-        </p>
+        <p ref={pRef} className="hero__subtitle">{subtitle}</p>
       </div>
 
-      <div className="hero__lanyard" aria-hidden="true">
-        <Lanyard position={[0, 0, 24]} gravity={[0, -40, 0]} fov={20} />
+      <div className="hero__col hero__card">
+        <ProfileCard
+          name="Marc Mateo"
+          title="Frontend Developer"
+          handle="marc-mateo"
+          status="Online"
+          contactText="Contacto"
+          avatarUrl={avatar}
+          showUserInfo={true}
+          enableTilt={true}
+          enableMobileTilt={false}      // ponlo a true si quieres tilt en móvil (requiere HTTPS y permiso)
+          onContactClick={() => console.log('Contact clicked')}
+          // Opcional: apaga el “glow” de fondo si prefieres más sobrio:
+          // showBehindGradient={false}
+        />
       </div>
-    </section>
+    </div>
   )
 }
