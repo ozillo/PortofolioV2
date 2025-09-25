@@ -1,0 +1,154 @@
+/* Altura del header para offset */
+.staggered-menu-wrapper {
+    --sm-nav-h: 56px;
+    position: fixed;
+    top: calc(env(safe-area-inset-top, 0px) + 10px);
+    left: 0; right: 0;
+    z-index: 1000;
+    width: 100%;
+    pointer-events: none;
+  }
+  
+  /* Header */
+  .staggered-menu-header {
+    pointer-events: auto;
+    position: relative;
+    width: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 12px;
+    height: var(--sm-nav-h);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin: 0 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    backdrop-filter: saturate(1.2) blur(10px);
+    -webkit-backdrop-filter: saturate(1.2) blur(10px);
+  }
+  
+  /* Logo */
+  .sm-logo {
+    display: inline-flex; align-items: center; justify-content: center;
+    user-select: none; width: 40px; height: 40px;
+    border-radius: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    text-decoration: none; overflow: hidden;
+  }
+  .sm-logo-img { display:block; height:100%; width:100%; object-fit:cover; }
+  .sm-logo-fallback { color: var(--fg); font-weight: 700; font-size: .9rem; letter-spacing: .5px; }
+  
+  /* Acciones header */
+  .sm-header-actions { display: inline-flex; align-items: center; gap: 8px; }
+  .sm-theme {
+    height: 40px; min-width: 40px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--fg);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 0 10px;
+  }
+  .sm-toggle {
+    display:inline-flex; align-items:center; gap:.35rem;
+    background: transparent; border: none; cursor: pointer;
+    color: var(--fg);
+    height: 40px; padding: 0 6px;
+  }
+  
+  /* Texto del toggle */
+  .sm-toggle-textWrap {
+    position: relative; display: inline-block; height: 1em; overflow: hidden;
+    white-space: nowrap; width: var(--sm-toggle-width, auto); min-width: var(--sm-toggle-width, auto);
+  }
+  .sm-toggle-textInner { display: flex; flex-direction: column; line-height: 1; }
+  .sm-toggle-line { display: block; height: 1em; line-height: 1; }
+  
+  /* Icono + */
+  .sm-icon { position: relative; width: 14px; height: 14px; flex: 0 0 14px; display:inline-flex; align-items:center; justify-content:center; will-change: transform; }
+  .sm-icon-line { position:absolute; left:50%; top:50%; width:100%; height:2px; background: currentColor; border-radius:2px; transform: translate(-50%, -50%); }
+  .sm-icon-line-v { transform: translate(-50%, -50%) rotate(90deg); }
+  
+  /* Panel */
+  .staggered-menu-panel {
+    position: fixed;
+    top: calc(env(safe-area-inset-top, 0px) + 10px + var(--sm-nav-h) + 8px);
+    bottom: 12px;
+    right: 12px; left: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex; flex-direction: column;
+    padding: 1.25rem 1rem 1rem 1rem;
+    overflow: auto; z-index: 1000; pointer-events: auto;
+    box-shadow: 0 12px 40px rgba(0,0,0,.18);
+  }
+  
+  /* Prelayers (bandas) */
+  .sm-prelayers {
+    position: fixed;
+    top: calc(env(safe-area-inset-top, 0px) + 10px + var(--sm-nav-h) + 8px);
+    bottom: 12px;
+    width: clamp(260px, 38vw, 420px);
+    pointer-events: none; z-index: 999; right: 12px;
+  }
+  [data-position='left'] .sm-prelayers { left: 12px; right: auto; }
+  .sm-prelayer { position: absolute; top: 0; right: 0; height: 100%; width: 100%; transform: translateX(0); border-radius: 20px; }
+  
+  /* Lista */
+  .sm-panel-inner { flex: 1; display: flex; flex-direction: column; gap: 1.25rem; }
+  .sm-panel-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .5rem; }
+  .sm-panel-itemWrap { position: relative; overflow: hidden; line-height: 1; }
+  
+  .sm-panel-item {
+    position: relative; color: var(--fg);
+    font-weight: 700; font-size: clamp(2rem, 8vw, 3rem);
+    cursor: pointer; line-height: 1.1; letter-spacing: -0.5px; text-transform: uppercase;
+    transition: color .25s ease; display: inline-block; text-decoration: none; padding-right: 1.2em;
+  }
+  .sm-panel-item:hover { color: var(--accent); }
+  .sm-panel-itemLabel { display: inline-block; will-change: transform; transform-origin: 50% 100%; }
+  
+  .sm-panel-list[data-numbering] { counter-reset: smItem; }
+  .sm-panel-list[data-numbering] .sm-panel-item::after {
+    counter-increment: smItem; content: counter(smItem, decimal-leading-zero);
+    position: absolute; top: .1em; right: 2.2em;
+    font-size: 14px; font-weight: 600; color: var(--accent);
+    letter-spacing: 0; pointer-events: none; user-select: none;
+    opacity: var(--sm-num-opacity, 0);
+  }
+  
+  /* Social */
+  .sm-socials { margin-top: auto; padding-top: 1rem; display: flex; flex-direction: column; gap: .75rem; }
+  .sm-socials-title { margin: 0; font-size: 1rem; font-weight: 600; color: var(--sm-accent, var(--accent)); text-transform: uppercase; }
+  .sm-socials-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
+  .sm-socials-link { font-size: 1.05rem; font-weight: 600; color: var(--fg); text-decoration: none; padding: 2px 0; display: inline-block; transition: color .25s ease, opacity .25s ease; }
+  .sm-socials-link:hover { color: var(--accent); }
+  
+  /* Accesibilidad */
+  .staggered-menu-header:focus-within .sm-toggle { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+  @media (prefers-reduced-motion: reduce) {
+    .sm-toggle, .sm-theme { transition: none !important; }
+  }
+  
+  /* ===== Ocultar bandas azules cuando el menú está cerrado (mobile) ===== */
+  .staggered-menu-wrapper:not([data-open]) .sm-prelayers {
+    display: none !important;
+    opacity: 0;
+    visibility: hidden;
+  }
+  .staggered-menu-wrapper[data-open] .sm-prelayers {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  /* En desktop no usamos estas bandas del menú móvil */
+  @media (min-width: 769px) {
+    .staggered-menu-wrapper .sm-prelayers {
+      display: none !important;
+    }
+  }
+  

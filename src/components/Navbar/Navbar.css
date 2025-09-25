@@ -1,0 +1,89 @@
+/* === Navbar (usa variables de tema) === */
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  color: var(--fg);
+}
+
+.navbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--nav-height);
+  gap: 1rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.navbar__brand {
+  font-weight: 700;
+  letter-spacing: .5px;
+}
+
+/* Grupo de enlaces tipo pill */
+.navbar__links {
+  display: flex;
+  gap: .25rem;
+  margin: 0;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.navbar__links a {
+  display: inline-block;
+  padding: .4rem .9rem;
+  border-radius: 999px;
+  opacity: .85;
+  transition: 160ms ease;
+}
+
+.navbar__links a:hover {
+  opacity: 1;
+  background: var(--surface);
+}
+
+.navbar__links a.active {
+  background: var(--surface-strong);
+  opacity: 1;
+  font-weight: 600;
+}
+
+/* Botón de toggle tema */
+.theme-toggle {
+  margin-left: .5rem;
+  padding: .4rem .7rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--fg);
+  cursor: pointer;
+  font-size: .95rem;
+  line-height: 1;
+  transition: background .15s ease, border-color .15s ease, transform .08s ease;
+}
+.theme-toggle:hover {
+  background: var(--surface-strong);
+}
+.theme-toggle:active {
+  transform: translateY(1px);
+}
+
+/* Responsive mínimo */
+@media (max-width: 640px) {
+  .navbar__inner {
+    gap: .5rem;
+  }
+  .navbar__links {
+    padding: 3px;
+  }
+  .navbar__links a {
+    padding: .35rem .7rem;
+  }
+}

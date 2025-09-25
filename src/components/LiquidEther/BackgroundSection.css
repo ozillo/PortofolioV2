@@ -1,0 +1,5 @@
+.le-section { position: relative; }
+.le-section--full { min-block-size: 100svh; } /* por si no usas inline style */
+.le-bg { position: absolute; inset: 0; z-index: 0; }
+.le-content { position: relative; z-index: 1; }
+.le-bg > .liquid-ether-container { position: absolute; inset: 0; }

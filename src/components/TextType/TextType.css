@@ -1,0 +1,27 @@
+.texttype {
+  display: inline-flex;
+  align-items: baseline;
+  --cursor-gap: 2px;
+  --cursor-width: 1ch;
+  --cursor-blink: 0.9s;
+}
+
+.texttype__text { }
+
+.texttype__cursor {
+  display: inline-block;
+  margin-left: var(--cursor-gap);
+  width: var(--cursor-width);
+  animation: texttype-blink var(--cursor-blink) step-end infinite;
+  color: currentColor; /* hereda color del contenedor */
+  line-height: 1;
+}
+
+@keyframes texttype-blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .texttype__cursor { animation: none; }
+}

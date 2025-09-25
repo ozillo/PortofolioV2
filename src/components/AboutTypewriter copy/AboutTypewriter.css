@@ -1,0 +1,38 @@
+/* Hereda variables desde .portfolio-wrapper.light / .portfolio-wrapper.dark */
+.about {
+  padding: 4.5rem 2rem; /* un pelín más de aire */
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.about__container {
+  max-width: 1000px; /* un poco más ancho para títulos grandes */
+  margin: 0 auto;
+}
+
+.about__title {
+  /* ↑ Tamaño: más grande en móvil y monitor */
+  font-size: clamp(34px, 6vw, 56px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.25rem;
+  color: var(--fg);
+}
+
+.about__text {
+  /* ↑ Tamaño: subimos base y tope; mejor legibilidad */
+  font-size: clamp(20px, 2.4vw, 24px);
+  line-height: 1.65;
+  color: var(--fg-muted);
+  margin: 0;
+}
+
+.about__typed {
+  text-decoration: none;
+}
+
+/* Aseguramos que el typewriter (texto y cursor) hereden el color del párrafo */
+.about__text .texttype__text,
+.about__text .texttype__cursor {
+  color: inherit;
+}

@@ -1,0 +1,309 @@
+/* ================================
+   PillNav — CSS completo
+   Respeta variables de tema globales:
+   --surface, --surface-strong, --border, --fg
+   ================================ */
+
+/* Contenedor fijo arriba, centrado */
+.pill-nav-container {
+    position: fixed;
+    top: 12px;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    pointer-events: none; /* deja pasar clics fuera del nav */
+  }
+  .pill-nav {
+    pointer-events: auto;
+  }
+  
+  /* Vars por defecto + layout */
+  .pill-nav {
+    --nav-h: 42px;
+    --logo: 36px;
+    --pill-pad-x: 18px;
+    --pill-gap: 3px;
+  
+    /* Si no pasas props, usamos las del tema */
+    --base: var(--surface);   /* fondo contenedor/logo/paneles */
+    --pill-bg: #ffffff;       /* fondo de pills */
+    --hover-text: #ffffff;    /* texto al hover */
+    --pill-text: #000000;     /* texto por defecto en pill */
+  
+    width: max-content;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    gap: 10px;
+  }
+  
+  /* Mobile: ocupa ancho y separa */
+  @media (max-width: 768px) {
+    .pill-nav {
+      width: 100%;
+      justify-content: space-between;
+      padding: 0 1rem;
+      background: transparent;
+    }
+  }
+  
+  /* Grupo de pills con “cápsula” base */
+  .pill-nav-items {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: var(--nav-h);
+    background: var(--base);
+    border-radius: 9999px;
+    border: 1px solid var(--border);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  }
+  
+  /* Logo circular a la izquierda */
+  .pill-logo {
+    width: var(--nav-h);
+    height: var(--nav-h);
+    border-radius: 50%;
+    background: var(--base);
+    border: 1px solid var(--border);
+    padding: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    text-decoration: none;
+  }
+  .pill-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .pill-logo-text {
+    font-weight: 700;
+    color: var(--fg);
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+  }
+  
+  /* Lista de pills */
+  .pill-list {
+    list-style: none;
+    display: flex;
+    align-items: stretch;
+    gap: var(--pill-gap);
+    margin: 0;
+    padding: 3px;
+    height: 100%;
+  }
+  .pill-list > li {
+    display: flex;
+    height: 100%;
+  }
+  
+  /* Pill */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0 var(--pill-pad-x);
+    background: var(--pill-bg);
+    color: var(--pill-text);
+    text-decoration: none;
+    border-radius: 9999px;
+    box-sizing: border-box;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Círculo hover animado (GSAP controla transform) */
+  .pill .hover-circle {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    border-radius: 50%;
+    background: var(--base);
+    z-index: 1;
+    display: block;
+    pointer-events: none;
+    will-change: transform;
+  }
+  
+  /* Doble etiqueta para swap de color */
+  .pill .label-stack {
+    position: relative;
+    display: inline-block;
+    line-height: 1;
+    z-index: 2;
+  }
+  .pill .pill-label {
+    position: relative;
+    z-index: 2;
+    display: inline-block;
+    line-height: 1;
+    will-change: transform;
+  }
+  .pill .pill-label-hover {
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--hover-text);
+    z-index: 3;
+    display: inline-block;
+    will-change: transform, opacity;
+  }
+  
+  /* Activo con punto inferior */
+  .pill.is-active::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 12px;
+    background: var(--base);
+    border-radius: 50px;
+    z-index: 4;
+  }
+  
+  /* Visibilidad desktop/mobile */
+  .desktop-only {
+    display: block;
+  }
+  .mobile-only {
+    display: none;
+  }
+  
+  @media (max-width: 768px) {
+    .desktop-only {
+      display: none;
+    }
+    .mobile-only {
+      display: flex;
+    }
+  }
+  
+  /* Botón hamburguesa */
+  .mobile-menu-button {
+    width: var(--nav-h);
+    height: var(--nav-h);
+    border-radius: 50%;
+    background: var(--base);
+    border: 1px solid var(--border);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    padding: 0;
+  }
+  .hamburger-line {
+    width: 16px;
+    height: 2px;
+    background: var(--pill-bg);
+    border-radius: 1px;
+    transition: all 0.01s ease;
+    transform-origin: center;
+  }
+  
+  @media (max-width: 768px) {
+    .mobile-menu-button {
+      display: flex;
+    }
+  }
+  
+  /* Popover móvil */
+  .mobile-menu-popover {
+    position: absolute;
+    top: calc(var(--nav-h) + 10px);
+    left: 1rem;
+    right: 1rem;
+    background: var(--base);
+    border: 1px solid var(--border);
+    border-radius: 27px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    z-index: 998;
+    opacity: 0;           /* GSAP anima esto */
+    transform-origin: top center;
+    visibility: hidden;   /* GSAP alterna visibility */
+  }
+  .mobile-menu-list {
+    list-style: none;
+    margin: 0;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .mobile-menu-popover .mobile-menu-link {
+    display: block;
+    padding: 12px 16px;
+    color: var(--pill-text);
+    background-color: var(--pill-bg);
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: all 0.2s ease;
+  }
+  .mobile-menu-popover .mobile-menu-link:hover {
+    cursor: pointer;
+    background-color: var(--base);
+    color: var(--hover-text);
+  }
+  
+  /* ===================== */
+  /* Toggle light/dark     */
+  /* ===================== */
+  
+  /* Botón toggle (visible en desktop, junto al nav) */
+  .pill-theme-toggle {
+    width: var(--nav-h);
+    height: var(--nav-h);
+    border-radius: 50%;
+    background: var(--base);
+    border: 1px solid var(--border);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--fg);
+    font-size: 0.95rem;
+    transition: background .15s ease, border-color .15s ease, transform .08s ease;
+  }
+  .pill-theme-toggle:hover {
+    background: var(--surface-strong);
+  }
+  .pill-theme-toggle:active {
+    transform: translateY(1px);
+  }
+  
+  /* Toggle dentro del menú móvil */
+  .mobile-theme-toggle {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    background: var(--base);
+    color: var(--fg);
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .mobile-theme-toggle:hover {
+    background: var(--surface-strong);
+  }
+  

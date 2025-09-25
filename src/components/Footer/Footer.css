@@ -1,0 +1,2 @@
+.footer { padding: 2rem 1.25rem; border-top: 1px solid rgba(255,255,255,0.06); opacity: 0.9; }
+.footer__inner { display: flex; justify-content: center; }
