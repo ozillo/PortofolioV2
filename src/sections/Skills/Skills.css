@@ -1,1 +1,69 @@
-.skills ul { display: flex; gap: 1rem; padding: 0; list-style: none; }
+/* Quita cualquier min-height/padding grande heredado de .section */
+.section.skills {
+    min-height: auto !important;
+    padding-block: 0 !important;
+  }
+  
+  /* Contenedor muy compacto y centrado */
+  .skills {
+    padding-inline: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Limita ancho y evita márgenes extra */
+  .skills__wrap {
+    width: min(100%, 1200px);
+    margin: 0 auto;
+  }
+  
+  /* Una sola fila, centrada. Si no cabe, scroll horizontal suave. */
+  .skills__row {
+    list-style: none;
+    margin: 0;
+    padding: 0;                      /* sin padding extra */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(14px, 3vw, 28px);
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
+  /* Scrollbar discreto (opcional) */
+  .skills__row::-webkit-scrollbar { height: 6px; }
+  .skills__row::-webkit-scrollbar-thumb { background: rgba(128,128,128,.25); border-radius: 999px; }
+  .skills__row::-webkit-scrollbar-track { background: transparent; }
+  
+  /* Solo iconos; sin line-height para no añadir altura extra */
+  .skills__item {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    line-height: 0;                  /* evita altura extra por línea */
+    color: currentColor;
+    transition: transform 0.18s ease;
+    font-size: clamp(28px, 6vw, 52px);   /* tamaño base compacto */
+  }
+  
+  .skills__item:hover { transform: scale(1.06); }
+  
+  /* AÚN MÁS COMPACTO EN MÓVIL */
+  @media (max-width: 600px) {
+    .section.skills { padding-block: 0 !important; }  /* cero vertical */
+    .skills { padding-block: 4px; }
+    .skills__row { gap: 12px; }
+    .skills__item { font-size: clamp(24px, 8vw, 40px); }
+  }
+  
+  /* Compacto en móviles muy pequeños */
+  @media (max-width: 380px) {
+    .skills { padding-block: 2px; }
+    .skills__row { gap: 10px; }
+    .skills__item { font-size: clamp(22px, 9vw, 36px); }
+  }
+  
