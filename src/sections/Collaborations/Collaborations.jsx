@@ -5,19 +5,19 @@ const CARDS = [
     name: "Saüc Floristeria",
     img: "https://res.cloudinary.com/dw9b8eqmc/image/upload/v1747453718/PortofolioMarcMateo/SaucMockup444_ugihj8.png",
     description: "Diseño visual y branding para floristería artesanal.",
-    url: "https://saucfloristeria.com",
+    url: "http://xn--sacfloristeria-hsb.cat/",
   },
   {
     name: "DevLink",
     img: "https://res.cloudinary.com/dw9b8eqmc/image/upload/v1747454116/PortofolioMarcMateo/DevLinkMockup444_imop50.png",
     description: "Plataforma para conectar desarrolladores con oportunidades.",
-    url: "https://devlink.com",
+    url: "https://frontend-final-project-ip0mr7t7q.vercel.app/home",
   },
   {
     name: "Fem Camí",
     img: "https://res.cloudinary.com/dw9b8eqmc/image/upload/v1747454116/PortofolioMarcMateo/FemCamiMockup444_vt1mcq.png",
     description: "Campaña comunitaria enfocada en la sostenibilidad.",
-    url: "https://femcami.org",
+    url: "https://www.femcami.cat/",
   },
 ];
 
