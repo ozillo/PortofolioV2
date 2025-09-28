@@ -50,7 +50,7 @@ export default function App() {
         <section id="hero" className="section"><Hero /></section>
         <section id="about" className="section"><About /></section>
         <section id="skills" className="section"><Skills /></section>
-        <section id="collaborations" className="section"><Collaborations /></section>
+        <section id="collaborations" className="section"><Collaborations /></section> 
       </main>
 
       <Footer />
