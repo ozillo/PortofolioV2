@@ -1,69 +1,123 @@
-/* Quita cualquier min-height/padding grande heredado de .section */
+/* Quita cualquier min-height/padding grande heredado */
 .section.skills {
-    min-height: auto !important;
-    padding-block: 0 !important;
-  }
-  
-  /* Contenedor muy compacto y centrado */
-  .skills {
-    padding-inline: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  /* Limita ancho y evita márgenes extra */
-  .skills__wrap {
-    width: min(100%, 1200px);
-    margin: 0 auto;
-  }
-  
-  /* Una sola fila, centrada. Si no cabe, scroll horizontal suave. */
-  .skills__row {
-    list-style: none;
-    margin: 0;
-    padding: 0;                      /* sin padding extra */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: clamp(14px, 3vw, 28px);
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
-  }
-  
-  /* Scrollbar discreto (opcional) */
-  .skills__row::-webkit-scrollbar { height: 6px; }
-  .skills__row::-webkit-scrollbar-thumb { background: rgba(128,128,128,.25); border-radius: 999px; }
-  .skills__row::-webkit-scrollbar-track { background: transparent; }
-  
-  /* Solo iconos; sin line-height para no añadir altura extra */
-  .skills__item {
-    flex: 0 0 auto;
-    display: grid;
-    place-items: center;
-    line-height: 0;                  /* evita altura extra por línea */
-    color: currentColor;
-    transition: transform 0.18s ease;
-    font-size: clamp(28px, 6vw, 52px);   /* tamaño base compacto */
-  }
-  
-  .skills__item:hover { transform: scale(1.06); }
-  
-  /* AÚN MÁS COMPACTO EN MÓVIL */
-  @media (max-width: 600px) {
-    .section.skills { padding-block: 0 !important; }  /* cero vertical */
-    .skills { padding-block: 4px; }
-    .skills__row { gap: 12px; }
-    .skills__item { font-size: clamp(24px, 8vw, 40px); }
-  }
-  
-  /* Compacto en móviles muy pequeños */
-  @media (max-width: 380px) {
-    .skills { padding-block: 2px; }
-    .skills__row { gap: 10px; }
-    .skills__item { font-size: clamp(22px, 9vw, 36px); }
-  }
-  
+  min-height: auto !important;
+  padding-block: 0 !important;
+}
+
+/* Contenedor centrado y compacto */
+.skills {
+  padding-inline: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.skills__wrap {
+  width: min(100%, 1100px);
+  margin: 0 auto;
+}
+
+/* ====== HEADER / TEXTOS ====== */
+.skills__header {
+  text-align: center;
+  margin: 48px auto 28px;
+  color: var(--skills-fg, #e8e8e8);
+}
+
+.skills__eyebrow {
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  opacity: .7;
+  font-size: 12px;
+  margin: 0 0 8px;
+}
+
+.skills__title {
+  font-size: clamp(28px, 4.5vw, 56px);
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 0 0 14px;
+  color: var(--skills-title, #ffffff);
+}
+
+.skills__lead {
+  opacity: .85;
+  margin: 0 0 8px;
+}
+
+.skills__desc {
+  opacity: .75;
+  margin: 0;
+  max-width: 820px;
+  margin-inline: auto;
+}
+
+.skills__linkline {
+  margin: 14px 0 0;
+  opacity: .85;
+}
+
+.skills__linkline a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ====== GRID DE ICONOS (dos filas como en la captura) ====== */
+.skills__grid {
+  list-style: none;
+  margin: 28px 0 56px;
+  padding: 0;
+
+  display: grid;
+  grid-template-columns: repeat(7, minmax(88px, 1fr));
+  gap: 26px 32px; /* fila x columna */
+  justify-items: center;
+  align-items: start;
+}
+
+/* Card de cada skill */
+.skills__card {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 10px;
+  color: currentColor;
+}
+
+.skills__icon {
+  line-height: 0;
+  font-size: clamp(34px, 6vw, 58px);
+  transition: transform .18s ease;
+}
+
+.skills__card:hover .skills__icon {
+  transform: scale(1.06);
+}
+
+.skills__label {
+  font-size: 14px;
+  opacity: .85;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 1100px) {
+  .skills__grid { grid-template-columns: repeat(6, minmax(84px, 1fr)); }
+}
+@media (max-width: 900px) {
+  .skills__grid { grid-template-columns: repeat(5, minmax(84px, 1fr)); }
+}
+@media (max-width: 700px) {
+  .skills__grid { grid-template-columns: repeat(4, minmax(84px, 1fr)); }
+  .skills__header { margin: 36px auto 20px; }
+}
+@media (max-width: 520px) {
+  .skills__grid { grid-template-columns: repeat(3, minmax(82px, 1fr)); gap: 22px 20px; }
+  .skills__icon { font-size: clamp(30px, 9vw, 44px); }
+  .skills__label { font-size: 13px; }
+}
+@media (max-width: 360px) {
+  .skills__grid { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+}

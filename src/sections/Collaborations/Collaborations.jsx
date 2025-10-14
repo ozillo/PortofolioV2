@@ -3,19 +3,19 @@ import "./Collaborations.css";
 const CARDS = [
   {
     name: "Saüc Floristeria",
-    img: "https://res.cloudinary.com/dw9b8eqmc/image/upload/v1747453718/PortofolioMarcMateo/SaucMockup444_ugihj8.png",
+    img: "https://res.cloudinary.com/dw9b8eqmc/image/upload/v1759141342/PortofolioMarcMateo/178shots_so_sl7d7v.png",
     description: "Diseño visual y branding para floristería artesanal.",
     url: "http://xn--sacfloristeria-hsb.cat/",
   },
   {
     name: "DevLink",
-    img: "https://res.cloudinary.com/dw9b8eqmc/image/upload/v1747454116/PortofolioMarcMateo/DevLinkMockup444_imop50.png",
+    img: "https://res.cloudinary.com/dw9b8eqmc/image/upload/v1759141366/PortofolioMarcMateo/433shots_so_sm2qmq.png",
     description: "Plataforma para conectar desarrolladores con oportunidades.",
     url: "https://frontend-final-project-ip0mr7t7q.vercel.app/home",
   },
   {
     name: "Fem Camí",
-    img: "https://res.cloudinary.com/dw9b8eqmc/image/upload/v1747454116/PortofolioMarcMateo/FemCamiMockup444_vt1mcq.png",
+    img: "https://res.cloudinary.com/dw9b8eqmc/image/upload/v1759141342/PortofolioMarcMateo/114shots_so_wgpxss.png",
     description: "Campaña comunitaria enfocada en la sostenibilidad.",
     url: "https://www.femcami.cat/",
   },
