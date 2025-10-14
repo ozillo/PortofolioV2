@@ -1,69 +1,72 @@
-/* Quita cualquier min-height/padding grande heredado */
+/* === Sección Skills: sobrescribe layout global === */
 .section.skills {
-  min-height: auto !important;
-  padding-block: 0 !important;
+  display: block !important;          /* ✅ evita flex heredado de global */
+  min-height: auto !important;        /* no fuerza 100svh */
+  padding-block: 0 !important;        /* más compacto */
+  padding-inline: 1.25rem;            /* coherente con el resto */
 }
 
-/* Contenedor centrado y compacto */
 .skills {
-  padding-inline: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
+  padding-inline: 0;                  /* ya lo maneja la sección */
+  display: block;
 }
 
 .skills__wrap {
   width: min(100%, 1100px);
-  margin: 0 auto;
+  margin: 0 auto;                     /* ✅ centra horizontalmente */
 }
 
-/* ====== HEADER / TEXTOS ====== */
+/* ===== Textos ===== */
 .skills__header {
   text-align: center;
   margin: 48px auto 28px;
-  color: var(--skills-fg, #e8e8e8);
+  color: var(--fg);
+  transition: color .2s ease;
 }
 
 .skills__eyebrow {
   letter-spacing: .08em;
   text-transform: uppercase;
-  opacity: .7;
+  color: var(--muted);
   font-size: 12px;
-  margin: 0 0 8px;
+  margin-bottom: 8px;
 }
 
 .skills__title {
   font-size: clamp(28px, 4.5vw, 56px);
   font-weight: 800;
-  line-height: 1.1;
-  margin: 0 0 14px;
-  color: var(--skills-title, #ffffff);
+  margin-bottom: 14px;
+  color: var(--fg);
 }
 
 .skills__lead {
+  color: var(--fg);
   opacity: .85;
-  margin: 0 0 8px;
+  margin-bottom: 8px;
 }
 
 .skills__desc {
+  color: var(--fg);
   opacity: .75;
-  margin: 0;
-  max-width: 820px;
-  margin-inline: auto;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .skills__linkline {
-  margin: 14px 0 0;
-  opacity: .85;
+  margin-top: 14px;
+  color: var(--fg);
+  opacity: .9;
 }
-
 .skills__linkline a {
-  color: inherit;
+  color: var(--accent);
   text-decoration: underline;
   text-underline-offset: 3px;
+  transition: opacity .2s ease;
 }
+.skills__linkline a:hover { opacity: .8; }
 
-/* ====== GRID DE ICONOS (dos filas como en la captura) ====== */
+/* ===== Grid de iconos ===== */
 .skills__grid {
   list-style: none;
   margin: 28px 0 56px;
@@ -71,38 +74,46 @@
 
   display: grid;
   grid-template-columns: repeat(7, minmax(88px, 1fr));
-  gap: 26px 32px; /* fila x columna */
+  gap: 26px 32px;
   justify-items: center;
   align-items: start;
 }
 
-/* Card de cada skill */
 .skills__card {
   display: grid;
   justify-items: center;
   align-content: start;
   gap: 10px;
-  color: currentColor;
+  color: var(--fg);
+  background: color-mix(in oklab, var(--surface) 100%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 10px;
+  transition: transform .18s ease, color .2s ease, background-color .2s ease, border-color .2s ease;
 }
 
 .skills__icon {
   line-height: 0;
   font-size: clamp(34px, 6vw, 58px);
-  transition: transform .18s ease;
+  transition: transform .18s ease, color .2s ease;
 }
 
-.skills__card:hover .skills__icon {
-  transform: scale(1.06);
+.skills__card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in oklab, var(--accent) 30%, var(--border));
+  background: color-mix(in oklab, var(--surface) 65%, transparent);
 }
+.skills__card:hover .skills__icon { color: var(--accent); }
 
 .skills__label {
   font-size: 14px;
+  color: var(--fg);
   opacity: .85;
   text-align: center;
   white-space: nowrap;
 }
 
-/* ====== RESPONSIVE ====== */
+/* ===== Responsive ===== */
 @media (max-width: 1100px) {
   .skills__grid { grid-template-columns: repeat(6, minmax(84px, 1fr)); }
 }
