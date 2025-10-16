@@ -1,80 +1,77 @@
-/* Namespaced para no chocar con otros estilos */
-.collab {
-    padding-block: clamp(24px, 6vw, 48px);
+.collaborations {
+  padding: 6rem 2rem;
+  text-align: center;
+  background: var(--section-bg, #f8f8f8);
+}
+
+.collaborations-title {
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  font-weight: 600;
+}
+
+.collaborations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.collaboration-card {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  height: 300px;
+  border-radius: 1rem;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.3s ease;
+}
+
+.collaboration-card:hover {
+  transform: translateY(-6px);
+}
+
+.card-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.75);
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.collaboration-card:hover .card-bg {
+  filter: brightness(0.9);
+  transform: scale(1.05);
+}
+
+.card-content {
+  position: relative;
+  z-index: 1;
+  padding: 1rem 1.25rem;
+  width: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  color: #fff;
+  text-align: left;
+}
+
+.card-content h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .collaborations-title {
+    font-size: 2rem;
   }
-  
-  .collab__grid {
-    width: min(1100px, 92vw);
-    margin: 0 auto;
-    display: grid;
-    gap: clamp(14px, 2.5vw, 22px);
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    align-items: start;
+
+  .collaboration-card {
+    height: 240px;
   }
-  
-  /* Tarjeta */
-  .collab__card {
-    display: flex;
-    flex-direction: column;
-    text-decoration: none;
-    color: inherit;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid rgba(127,127,127,0.18);
-    background: rgba(255,255,255,0.04);
-    box-shadow: 0 14px 30px -16px rgba(0,0,0,0.35);
-    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
-  }
-  
-  @media (prefers-color-scheme: light) {
-    .collab__card {
-      background: rgba(255,255,255,0.9);
-      border-color: rgba(0,0,0,0.08);
-    }
-  }
-  
-  .collab__card:hover {
-    transform: translateY(-2px);
-    border-color: rgba(127,127,127,0.28);
-    box-shadow: 0 22px 40px -18px rgba(0,0,0,0.4);
-  }
-  
-  /* Imagen */
-  .collab__thumb {
-    aspect-ratio: 16 / 10;       /* proporción estable, recorte agradable */
-    background: #0e0e10;
-  }
-  
-  .collab__thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;           /* rellena sin distorsionar */
-    display: block;
-  }
-  
-  /* Texto */
-  .collab__body {
-    padding: 12px 14px 14px;
-    text-align: left;
-  }
-  
-  .collab__name {
-    margin: 0 0 6px;
-    font-size: 1rem;
-    font-weight: 700;
-  }
-  
-  .collab__desc {
-    margin: 0;
-    font-size: 0.92rem;
-    opacity: 0.9;
-  }
-  
-  /* Ajustes móviles */
-  @media (max-width: 420px) {
-    .collab__grid { width: 94vw; }
-    .collab__body { padding: 10px 12px 12px; }
-    .collab__name { font-size: .98rem; }
-    .collab__desc { font-size: .88rem; }
-  }
-  
+}

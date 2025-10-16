@@ -6,7 +6,8 @@ import Footer from './components/Footer/Footer'
 import Hero from './sections/Hero/Hero'
 import About from './sections/About/About'
 import Skills from './sections/Skills/Skills'
-import Collaborations from './sections/Collaborations/Collaborations'
+// import ProjectsSlider from './sections/ProjectsSlider/ProjectsSlider' // ⛔️ sustituido
+import WheelSlider from './sections/WheelSlider/WheelSlider'            // ✅ nuevo
 import PillNav from './components/PillNav'
 
 export default function App() {
@@ -34,10 +35,10 @@ export default function App() {
       {/* <Navbar />  si lo quieres activo, descomenta */}
       <PillNav
         items={[
-          { label: 'Inicio',         ariaLabel: 'Ir a inicio',         link: '#hero' },
-          { label: 'Sobre mí',       ariaLabel: 'Ir a sobre mí',       link: '#about' },
-          { label: 'Habilidades',    ariaLabel: 'Ir a habilidades',    link: '#skills' },
-          { label: 'Colaboraciones', ariaLabel: 'Ir a colaboraciones', link: '#collaborations' },
+          { label: 'Inicio',       ariaLabel: 'Ir a inicio',       link: '#hero' },
+          { label: 'Sobre mí',     ariaLabel: 'Ir a sobre mí',     link: '#about' },
+          { label: 'Habilidades',  ariaLabel: 'Ir a habilidades',  link: '#skills' },
+          { label: 'Galería',      ariaLabel: 'Ir a galería',      link: '#wheel-slider' }, // 🔁 nuevo destino
         ]}
         socialItems={[
           { label: 'Twitter',  link: 'https://twitter.com' },
@@ -47,10 +48,24 @@ export default function App() {
       />
 
       <main>
-        <section id="hero" className="section"><Hero /></section>
-        <section id="about" className="section"><About /></section>
-        <section id="skills" className="section"><Skills /></section>
-        <section id="collaborations" className="section"><Collaborations /></section> 
+        <section id="hero" className="section">
+          <Hero />
+        </section>
+
+        <section id="about" className="section">
+          <About />
+        </section>
+
+        <section id="skills" className="section">
+          <Skills />
+        </section>
+
+        {/* Slider tipo rueda con GSAP (tiene id="wheel-slider" internamente) */}
+        <WheelSlider />
+
+        {/* Si quieres volver a Proyectos en slider horizontal:
+        <ProjectsSlider />
+        */}
       </main>
 
       <Footer />

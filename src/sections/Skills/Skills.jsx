@@ -41,24 +41,24 @@ export default function Skills() {
     <section id="skills" className="section skills" aria-label="Skills">
       <div className="skills__wrap">
         <header className="skills__header">
-          <p className="skills__eyebrow">A PROBLEM IS A CHANCE FOR YOU TO DO YOUR BEST.</p>
-          <h2 className="skills__title">Skills &amp; Experience</h2>
+          <p className="skills__eyebrow">UN PROBLEMA ES UNA OPORTUNIDAD PARA QUE HAGAS LO MEJOR QUE PUEDAS.</p>
+          <h2 className="skills__title">Hablidades &amp; Experiencia</h2>
 
           <p className="skills__lead">
-            The main area of expertise is front end development (client side of the web).
+          Mi principal área de especialización es el desarrollo front-end (del lado del cliente web).
           </p>
           <p className="skills__desc">
-            HTML, CSS, JS, building small and medium web applications with Vue or React, custom
-            plugins, features, animations, and coding interactive layouts. I also have full-stack
-            experience with one of the most popular open-source CMS on the web — WordPress.
+            HTML, CSS, JS, desarrollo de aplicaciones web pequeñas y medianas con Vue o React, plugins 
+            personalizados, funciones, animaciones y programación de diseños interactivos. También tengo experiencia
+             como desarrollador full-stack con uno de los CMS de código abierto más populares de la web: WordPress.
           </p>
 
           <p className="skills__linkline">
-            Visit my{" "}
+            Visita mi{" "}
             <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">
               LinkedIn
             </a>{" "}
-            for more details.
+            para mas detalles.
           </p>
         </header>
 

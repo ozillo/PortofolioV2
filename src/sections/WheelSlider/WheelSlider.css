@@ -1,0 +1,310 @@
+/* ===========================
+   WheelSlider – Tight + Heading + Backdrop dim + Caption under card + Browser icon
+   =========================== */
+
+/* Tema + knobs */
+.wheel-slider {
+    --ws-bg: #0f1115;
+    --ws-fg: #e9edf4;
+  
+    /* Rueda & cartas (muy juntas) */
+    --wheel-d: 220vw;
+    --wheel-max: 1900px;
+    --card-w: 11%;
+    --card-max: 260px;
+  
+    /* Encabezado principal */
+    --title-size: clamp(28px, 5vw, 64px);
+    --subtitle-size: clamp(14px, 1.8vw, 18px);
+    --subtitle-max: 68ch;
+  
+    /* Imagen destacada & franja inferior */
+    --header-w: 48vw;
+    --header-max: 460px;
+    --strip-h: 28vh;
+  
+    /* Caption */
+    --cap-bg: rgba(0,0,0,0.45);
+    --cap-bg-light: rgba(255,255,255,0.6);
+    --cap-fg: #fff;
+    --cap-fg-light: #0d0f14;
+  
+    /* Acentos */
+    --ring: rgba(99,102,241,.6);
+    --shadow: 0 10px 30px rgba(0,0,0,.35);
+  }
+  
+  html[data-theme="light"] .wheel-slider {
+    --ws-bg: #f7f7f8;
+    --ws-fg: #0d0f14;
+    --cap-bg: var(--cap-bg-light);
+    --cap-fg: var(--cap-fg-light);
+  }
+  
+  @media (max-width: 600px) {
+    .wheel-slider {
+      --wheel-d: 200vw;
+      --wheel-max: 1800px;
+      --card-w: 13%;
+      --card-max: 240px;
+  
+      --title-size: clamp(26px, 7vw, 38px);
+      --subtitle-size: clamp(14px, 4vw, 16px);
+      --subtitle-max: 75ch;
+  
+      --header-w: 72vw;
+      --header-max: 560px;
+      --strip-h: 30vh;
+    }
+  }
+  
+  /* Sección */
+  .wheel-slider {
+    position: relative;
+    background: var(--ws-bg);
+    color: var(--ws-fg);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+  
+  /* Wrapper pineado */
+  .ws__pin {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+  }
+  
+  /* ===== Backdrop (cierra al tocar fuera) ===== */
+  .ws__backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 2;                   /* por debajo de .ws__header (z-index: 3) */
+    background: transparent;      /* sin carta abierta → transparente */
+    border: none;
+    padding: 0;
+    margin: 0;
+    pointer-events: none;         /* desactivado por defecto */
+    touch-action: manipulation;
+    transition: background 200ms ease, backdrop-filter 200ms ease;
+  }
+  .ws__pin.is-open .ws__backdrop {
+    pointer-events: auto;                 /* captura taps/clicks para cerrar */
+    background: rgba(0, 0, 0, 0.12);      /* leve oscurecido */
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+  }
+  
+  /* ====== Encabezado (título + subtítulo) ====== */
+  .ws__heading {
+    position: absolute;
+    top: 16vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(1100px, 92vw);
+    text-align: center;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .ws__title {
+    margin: 0 0 10px 0;
+    font-weight: 800;
+    font-size: var(--title-size);
+    line-height: 1.05;
+    letter-spacing: .2px;
+    color: var(--ws-fg);
+  }
+  .ws__subtitle {
+    margin: 0 auto;
+    max-width: var(--subtitle-max);
+    font-size: var(--subtitle-size);
+    line-height: 1.55;
+    opacity: .9;
+    color: var(--ws-fg);
+  }
+  
+  /* ===== Área receptora (apila imagen + caption en columna) ===== */
+  .ws__header {
+    position: absolute;
+    inset: 0 auto auto 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 58vh;
+    display: grid;
+    place-items: center;
+    z-index: 3; /* sobre el backdrop */
+    pointer-events: auto;
+  }
+  .ws__headerInner {
+    display: flex;
+    flex-direction: column;     /* IMAGEN arriba, CAPTION debajo */
+    align-items: center;
+    width: min(var(--header-max), 92vw); /* el mismo ancho máximo de la imagen */
+  }
+  .ws__header img {
+    width: var(--header-w);
+    height: var(--header-w);
+    max-width: var(--header-max);
+    max-height: var(--header-max);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    object-fit: cover;
+    cursor: pointer;
+  }
+  
+  /* ===== Caption bajo la imagen ===== */
+  .ws__caption {
+    margin-top: 14px;
+    padding: 14px 16px;
+    width: 100%;
+    border-radius: 14px;
+    background: var(--cap-bg);
+    color: var(--cap-fg);
+    box-shadow: 0 10px 24px rgba(0,0,0,.18);
+    transform: translateY(6px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 220ms ease, transform 220ms ease, background 180ms ease;
+    text-align: center;
+  }
+  .ws__caption.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .ws__capTitle {
+    margin: 0 0 6px 0;
+    font-weight: 800;
+    font-size: clamp(18px, 2.8vw, 24px);
+    line-height: 1.2;
+  }
+  .ws__capDesc {
+    margin: 0 0 10px 0;
+    font-size: clamp(13px, 2.2vw, 16px);
+    line-height: 1.55;
+    opacity: .95;
+  }
+  
+  /* Botón base (reutilizado) */
+  .ws__capBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1px solid currentColor;
+    text-decoration: none;
+    font-weight: 700;
+    color: inherit;                /* ← hereda color (adapta light/dark) */
+    background: transparent;
+    transition: transform 120ms ease, background 120ms ease;
+  }
+  .ws__capBtn:hover {
+    transform: translateY(-1px);
+    background: rgba(255,255,255,0.1);
+  }
+  html[data-theme="light"] .wheel-slider .ws__capBtn:hover {
+    background: rgba(0,0,0,0.08);
+  }
+  .ws__capBtn:focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 3px;
+  }
+  
+  /* Botón solo icono (circular) */
+  .ws__capBtn--icon {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 999px;
+    display: inline-grid;
+    place-items: center;
+    line-height: 0;
+  }
+  .ws__capBtn--icon svg {
+    width: 20px;
+    height: 20px;
+    /* El SVG usa stroke/fill = currentColor → se adapta a modo claro/oscuro */
+  }
+  .ws__capBtn--icon:hover {
+    background: rgba(255,255,255,0.12);
+  }
+  html[data-theme="light"] .wheel-slider .ws__capBtn--icon:hover {
+    background: rgba(0,0,0,0.08);
+  }
+  .ws__capBtn--icon:focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 3px;
+  }
+  
+  /* Franja inferior */
+  .ws__slider {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: var(--strip-h);
+    z-index: 1;
+    pointer-events: none;
+  }
+  
+  /* Rueda */
+  .wheel {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--wheel-d);
+    height: var(--wheel-d);
+    max-width: var(--wheel-max);
+    max-height: var(--wheel-max);
+  }
+  
+  /* Cartas */
+  .wheel__card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--card-w);
+    max-width: var(--card-max);
+    aspect-ratio: 1 / 1;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+  .wheel__card img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(0,0,0,.35);
+    will-change: transform;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+  
+  /* Indicador “Scroll down” */
+  .ws__scroll {
+    position: absolute;
+    left: 50%;
+    bottom: 18px;
+    transform: translateX(-50%);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    display: grid;
+    place-items: center;
+    gap: 6px;
+    z-index: 3;
+  }
+  .ws__scroll .arrow {
+    width: 15px;
+    height: 15px;
+    filter: invert(1);
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KPHBhdGggZmlsbD0iYmxhY2siIGQ9Ik00ODMuMiwxOTIuMmMtMjAuNS0yMC41LTUzLjUtMjAuOC03My43LTAuNkwyNTcsMzQ0LjFMMTA0LjUsMTkxLjZjLTIwLjItMjAuMi01My4yLTE5LjktNzMuNywwLjYKCWMtMjAuNSwyMC41LTIwLjgsNTMuNS0wLjYsNzMuN2wxOTAsMTkwYzEwLjEsMTAuMSwyMy40LDE1LjEsMzYuOCwxNWMxMy4zLDAuMSwyNi43LTQuOSwzNi44LTE1bDE5MC0xOTAKCUM1MDMuOSwyNDUuNyw1MDMuNywyMTIuNyw0ODMuMiwxOTIuMnoiLz4KPC9zdmc+);
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+  
