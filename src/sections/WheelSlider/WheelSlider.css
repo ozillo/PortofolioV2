@@ -1,5 +1,5 @@
 /* ===========================
-   WheelSlider – Tight + Heading + Backdrop dim + Caption under card + Browser icon
+   WheelSlider – Cartas muy pegadas (desktop y mobile)
    =========================== */
 
 /* Tema + knobs */
@@ -7,11 +7,11 @@
     --ws-bg: #0f1115;
     --ws-fg: #e9edf4;
   
-    /* Rueda & cartas (muy juntas) */
-    --wheel-d: 220vw;
-    --wheel-max: 1900px;
-    --card-w: 11%;
-    --card-max: 260px;
+    /* 🔥 Cartas MUY PEGADAS */
+    --wheel-d: 140vw;      /* mucho más pequeño = cartas casi tocándose */
+    --wheel-max: 1300px;
+    --card-w: 31%;         /* tamaño estable para mantener legibilidad */
+    --card-max: 240px;
   
     /* Encabezado principal */
     --title-size: clamp(28px, 5vw, 64px);
@@ -43,10 +43,11 @@
   
   @media (max-width: 600px) {
     .wheel-slider {
-      --wheel-d: 200vw;
-      --wheel-max: 1800px;
-      --card-w: 13%;
-      --card-max: 240px;
+      /* 🔥 Mobile también muy pegado */
+      --wheel-d: 130vw;
+      --wheel-max: 1000px;
+      --card-w: 28%;    /* un poco más grande en mobile */
+      --card-max: 200px;
   
       --title-size: clamp(26px, 7vw, 38px);
       --subtitle-size: clamp(14px, 4vw, 16px);
@@ -74,27 +75,27 @@
     width: 100%;
   }
   
-  /* ===== Backdrop (cierra al tocar fuera) ===== */
+  /* Backdrop */
   .ws__backdrop {
     position: absolute;
     inset: 0;
-    z-index: 2;                   /* por debajo de .ws__header (z-index: 3) */
-    background: transparent;      /* sin carta abierta → transparente */
+    z-index: 2;
+    background: transparent;
     border: none;
     padding: 0;
     margin: 0;
-    pointer-events: none;         /* desactivado por defecto */
+    pointer-events: none;
     touch-action: manipulation;
     transition: background 200ms ease, backdrop-filter 200ms ease;
   }
   .ws__pin.is-open .ws__backdrop {
-    pointer-events: auto;                 /* captura taps/clicks para cerrar */
-    background: rgba(0, 0, 0, 0.12);      /* leve oscurecido */
+    pointer-events: auto;
+    background: rgba(0, 0, 0, 0.12);
     -webkit-backdrop-filter: blur(2px);
     backdrop-filter: blur(2px);
   }
   
-  /* ====== Encabezado (título + subtítulo) ====== */
+  /* Encabezado */
   .ws__heading {
     position: absolute;
     top: 16vh;
@@ -122,24 +123,24 @@
     color: var(--ws-fg);
   }
   
-  /* ===== Área receptora (apila imagen + caption en columna) ===== */
+  /* Header */
   .ws__header {
     position: absolute;
     inset: 0 auto auto 0;
     top: 0;
     left: 0;
     width: 100%;
-    height: 58vh;
+    height: 72vh;
     display: grid;
     place-items: center;
-    z-index: 3; /* sobre el backdrop */
+    z-index: 3;
     pointer-events: auto;
   }
   .ws__headerInner {
     display: flex;
-    flex-direction: column;     /* IMAGEN arriba, CAPTION debajo */
+    flex-direction: column;
     align-items: center;
-    width: min(var(--header-max), 92vw); /* el mismo ancho máximo de la imagen */
+    width: min(var(--header-max), 92vw);
   }
   .ws__header img {
     width: var(--header-w);
@@ -152,7 +153,7 @@
     cursor: pointer;
   }
   
-  /* ===== Caption bajo la imagen ===== */
+  /* Caption */
   .ws__caption {
     margin-top: 14px;
     padding: 14px 16px;
@@ -185,7 +186,7 @@
     opacity: .95;
   }
   
-  /* Botón base (reutilizado) */
+  /* Botones */
   .ws__capBtn {
     display: inline-flex;
     align-items: center;
@@ -195,7 +196,7 @@
     border: 1px solid currentColor;
     text-decoration: none;
     font-weight: 700;
-    color: inherit;                /* ← hereda color (adapta light/dark) */
+    color: inherit;
     background: transparent;
     transition: transform 120ms ease, background 120ms ease;
   }
@@ -211,7 +212,6 @@
     outline-offset: 3px;
   }
   
-  /* Botón solo icono (circular) */
   .ws__capBtn--icon {
     width: 44px;
     height: 44px;
@@ -224,7 +224,6 @@
   .ws__capBtn--icon svg {
     width: 20px;
     height: 20px;
-    /* El SVG usa stroke/fill = currentColor → se adapta a modo claro/oscuro */
   }
   .ws__capBtn--icon:hover {
     background: rgba(255,255,255,0.12);
@@ -237,7 +236,7 @@
     outline-offset: 3px;
   }
   
-  /* Franja inferior */
+  /* Slider inferior */
   .ws__slider {
     position: absolute;
     inset: auto 0 0 0;
@@ -285,7 +284,7 @@
     -webkit-user-drag: none;
   }
   
-  /* Indicador “Scroll down” */
+  /* Indicador Scroll */
   .ws__scroll {
     position: absolute;
     left: 50%;

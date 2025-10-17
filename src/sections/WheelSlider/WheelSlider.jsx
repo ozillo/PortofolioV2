@@ -45,9 +45,9 @@ const SLIDES = [
   },
 ];
 
-const HEADING_TITLE = "Portfolio & Previous Projects";
+const HEADING_TITLE = "Colaboraciones & Proyectos";
 const HEADING_SUB =
-  "I have built various different projects to fit different aspects of the client's business. If you want to see more examples of my work than the ones showcased in this site, please contact me!";
+  "";
 
 export default function WheelSlider() {
   const items = useMemo(() => SLIDES, []);
