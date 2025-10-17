@@ -1,0 +1,123 @@
+/* === Overlay general === */
+.intro-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: grid;
+    place-items: center;
+    background: var(--page-bg, #0f1115);
+    color: var(--page-fg, #e9edf4);
+  }
+  
+  @media (prefers-color-scheme: light) {
+    .intro-loader {
+      background: var(--page-bg, #f7f7f8);
+      color: var(--page-fg, #0d0f14);
+    }
+  }
+  
+  /* === Contenido central === */
+  .intro-loader__wrapper {
+    display: grid;
+    gap: 16px;
+    min-width: 220px;
+    width: min(56ch, 80vw);
+    text-align: center;
+    animation: fadeIn 280ms ease-out both;
+  }
+  
+  /* === Texto principal === */
+  .intro-loader__brand {
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    font-size: clamp(18px, 4vw, 28px);
+    opacity: 0.92;
+  }
+  
+  /* === Barra de carga === */
+  .intro-loader__bar {
+    position: relative;
+    width: 100%;
+    height: 2px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.18);
+  }
+  
+  @media (prefers-color-scheme: light) {
+    .intro-loader__bar {
+      background: rgba(0, 0, 0, 0.15);
+    }
+  }
+  
+  /* brillo sutil que pasa por encima */
+  .intro-loader__bar::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, currentColor 50%, transparent 100%);
+    opacity: 0.25;
+    animation: sweep 1s linear infinite;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .intro-loader__bar::after {
+      display: none;
+    }
+  }
+  
+  /* relleno de la barra */
+  .intro-loader__bar-fill {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transform-origin: left center;
+    background: currentColor;
+    opacity: 0.85;
+    animation: growX 1s ease-out both;
+  }
+  
+  /* === Animaciones === */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes growX {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+  
+  @keyframes sweep {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(100%);
+    }
+  }
+  
+  /* === Accesibilidad === */
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+    padding: 0;
+    margin: -1px;
+  }
+  

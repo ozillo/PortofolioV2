@@ -1,41 +1,62 @@
 /* Contenedor general */
 .about {
-    display: grid;
-    place-items: center;
-    /* Un poco menos de padding al no haber título */
-    padding-block: clamp(32px, 7vw, 80px);
+  position: relative;           /* para contener el canvas absoluto */
+  display: grid;
+  place-items: center;
+  padding-block: clamp(32px, 7vw, 80px);
+  isolation: isolate;           /* que los blends del canvas no afecten al texto */
+  overflow: clip;               /* evita fugas del canvas */
+}
+
+/* Capa de fondo ocupando toda la sección */
+.about__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;         /* que no bloquee interacciones */
+}
+
+/* Opcional: un velo sutil para contraste del texto (auto light/dark) */
+.about__bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* velo muy leve que mejora el contraste sin “ensuciar” el shader */
+  background: color-mix(in oklab, Canvas 85%, transparent);
+}
+
+/* Caja interna centrada */
+.about__container {
+  position: relative;
+  z-index: 1;                   /* sobre el fondo */
+  width: 100%;
+  max-width: min(1000px, 92vw);
+  padding-inline: 16px;
+  text-align: center;
+}
+
+/* Texto tipeado grande y fluido */
+.about__typed .text-type__content {
+  font-size: clamp(1.35rem, 4vw, 2.75rem);
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* Cursor */
+.about__typed .text-type__cursor {
+  font-size: inherit;
+  line-height: 1;
+  margin-left: 0.35rem;
+}
+
+/* Microajuste responsive */
+@media (max-width: 600px) {
+  .about {
+    padding-block: clamp(28px, 8vw, 72px);
   }
-  
-  /* Caja interna centrada */
-  .about__container {
-    width: 100%;
-    max-width: min(1000px, 92vw);
-    padding-inline: 16px;
-    text-align: center;
-    margin-inline: auto;
-  }
-  
-  /* Texto tipeado grande y fluido */
   .about__typed .text-type__content {
-    font-size: clamp(1.35rem, 4vw, 2.75rem);
-    line-height: 1.2;
-    font-weight: 600;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.005em;
   }
-  
-  /* El cursor hereda tamaño del texto */
-  .about__typed .text-type__cursor {
-    font-size: inherit;
-    line-height: 1;
-    margin-left: 0.35rem;
-  }
-  
-  /* (Opcional) más grande en pantallas muy anchas */
-  /*
-  @media (min-width: 1200px) {
-    .about__typed .text-type__content {
-      font-size: clamp(2rem, 3vw, 3.25rem);
-    }
-  }
-  */
-  
+}

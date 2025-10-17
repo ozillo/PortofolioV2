@@ -8,9 +8,9 @@ export default function About() {
         <TextType
           className="about__typed"
           text={[
-            'Soy un Frontend Developer centrado en React, GSAP y UI fluidas.',
-            'Me gusta la performance, la accesibilidad y los microdetalles.',
-            'Siempre preparado para crear nuevas experiencias de diseño.'
+            'Me dedico a diseñar y desarrollar experiencias digitales funcionales y con carácter propio.',
+            'Trabajo con React y GSAP para crear interfaces fluidas, accesibles y de alto rendimiento.',
+            'Pongo atención en cada detalle para reforzar la identidad y generar impacto real.'
           ]}
           typingSpeed={75}
           pauseDuration={1500}
