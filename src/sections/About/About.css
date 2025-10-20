@@ -1,62 +1,78 @@
+/* ===== About.css ===== */
+
 /* Contenedor general */
 .about {
-  position: relative;           /* para contener el canvas absoluto */
   display: grid;
   place-items: center;
-  padding-block: clamp(32px, 7vw, 80px);
-  isolation: isolate;           /* que los blends del canvas no afecten al texto */
-  overflow: clip;               /* evita fugas del canvas */
+  padding-block: clamp(16px, 4vw, 60px);
+  min-height: auto; /* ya no forzamos altura grande */
+  background: var(--about-bg, transparent);
+  color: var(--about-fg, currentColor);
 }
 
-/* Capa de fondo ocupando toda la sección */
-.about__bg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;         /* que no bloquee interacciones */
-}
-
-/* Opcional: un velo sutil para contraste del texto (auto light/dark) */
-.about__bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  /* velo muy leve que mejora el contraste sin “ensuciar” el shader */
-  background: color-mix(in oklab, Canvas 85%, transparent);
-}
-
-/* Caja interna centrada */
+/* Contenedor interno centrado */
 .about__container {
-  position: relative;
-  z-index: 1;                   /* sobre el fondo */
   width: 100%;
   max-width: min(1000px, 92vw);
   padding-inline: 16px;
   text-align: center;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 2vw, 16px);
 }
 
-/* Texto tipeado grande y fluido */
-.about__typed .text-type__content {
-  font-size: clamp(1.35rem, 4vw, 2.75rem);
-  line-height: 1.2;
+/* ===== Estilos del texto decrypt ===== */
+.decrypted-parent {
+  display: block;
+  text-align: center;
+  width: 100%;
+}
+
+.decrypted-line {
+  display: block;
   font-weight: 600;
   letter-spacing: 0.01em;
+  font-size: clamp(1.2rem, 3.8vw, 2.4rem);
+  line-height: 1.25;
+  color: var(--about-fg, currentColor);
+  transition: color 0.3s ease;
 }
 
-/* Cursor */
-.about__typed .text-type__cursor {
-  font-size: inherit;
-  line-height: 1;
-  margin-left: 0.35rem;
+.decrypted-line + .decrypted-line {
+  margin-top: 10px;
 }
 
-/* Microajuste responsive */
+.decrypted-encrypted {
+  opacity: 0.55;
+  filter: blur(0.25px);
+  transition: opacity 0.3s ease;
+}
+
+/* ===== Adaptaciones responsive ===== */
 @media (max-width: 600px) {
   .about {
-    padding-block: clamp(28px, 8vw, 72px);
+    padding-block: 32px;
   }
-  .about__typed .text-type__content {
-    letter-spacing: 0.005em;
+
+  .decrypted-line {
+    font-size: clamp(1rem, 4vw, 1.6rem);
   }
+
+  .about__container {
+    gap: 10px;
+  }
+}
+
+/* ===== Tema oscuro (opcional, si no usas data-theme global) ===== */
+[data-theme="dark"] .about {
+  --about-bg: #0b0b0b;
+  --about-fg: #f5f5f5;
+}
+
+[data-theme="light"] .about {
+  --about-bg: #ffffff;
+  --about-fg: #1a1a1a;
 }
