@@ -46,8 +46,7 @@ const SLIDES = [
 ];
 
 const HEADING_TITLE = "Colaboraciones & Proyectos";
-const HEADING_SUB =
-  "";
+const HEADING_SUB = "";
 
 export default function WheelSlider() {
   const items = useMemo(() => SLIDES, []);
@@ -56,29 +55,94 @@ export default function WheelSlider() {
   const sectionRef = useRef(null);
   const pinRef = useRef(null);
   const wheelRef = useRef(null);
-  const headerRef = useRef(null);        // contenedor clickable (para cerrar)
-  const headerInnerRef = useRef(null);   // apila imagen + caption en columna
+  const sliderRef = useRef(null);
+  const headerRef = useRef(null); // contenedor clickable (para cerrar)
+  const headerInnerRef = useRef(null); // apila imagen + caption en columna
   const cardRefs = useRef([]);
   const currentCardRef = useRef(null);
+  const scrollDistanceRef = useRef(0);
+  const progressRef = useRef({ value: 0 });
+  const autoTweenRef = useRef(null);
+  const isPointerControlRef = useRef(false);
 
-  function setupWheel() {
+  function setupCarousel() {
     const wheel = wheelRef.current;
+    const slider = sliderRef.current;
     if (!wheel) return;
+    if (!slider) return;
     const cards = cardRefs.current.filter(Boolean);
     if (!cards.length) return;
 
-    const radius = wheel.offsetWidth / 2;
-    const center = radius;
-    const slice = 360 / cards.length;
-    const DEG2RAD = Math.PI / 180;
+    const computed = window.getComputedStyle(wheel);
+    const gap = parseFloat(computed.columnGap || computed.gap || "0");
 
-    gsap.set(cards, {
-      x: (i) => center + radius * Math.sin(i * slice * DEG2RAD),
-      y: (i) => center - radius * Math.cos(i * slice * DEG2RAD),
-      rotation: (i) => i * slice,
-      xPercent: -50,
-      yPercent: -50,
+    const totalWidth = cards.reduce((acc, card) => acc + card.offsetWidth, 0) +
+      gap * Math.max(0, cards.length - 1);
+    const containerWidth = slider.offsetWidth;
+
+    scrollDistanceRef.current = Math.max(0, totalWidth - containerWidth);
+
+    gsap.set(cards, { clearProps: "all" });
+    gsap.set(wheel, { x: 0 });
+  }
+
+  function updateTransforms() {
+    const cards = cardRefs.current.filter(Boolean);
+    if (!cards.length) return;
+
+    const slider = sliderRef.current;
+    const containerRect = slider
+      ? slider.getBoundingClientRect()
+      : { left: 0, width: window.innerWidth };
+    const center = containerRect.left + containerRect.width / 2;
+
+    cards.forEach((card) => {
+      const rect = card.getBoundingClientRect();
+      const cardCenter = rect.left + rect.width / 2;
+      const distanceRatio = containerRect.width
+        ? (cardCenter - center) / containerRect.width
+        : 0;
+
+      const clamped = gsap.utils.clamp(-1, 1, distanceRatio * 2.4);
+      const rotateY = clamped * 40;
+      const translateY = Math.abs(clamped) * 22;
+      const translateZ = (1 - Math.abs(clamped)) * 90;
+      const scale = 1 - Math.abs(clamped) * 0.25;
+      const zIndex = Math.round((1 - Math.abs(clamped)) * 120);
+      const opacity = gsap.utils.clamp(0.2, 1, 1 - Math.abs(clamped) * 0.65);
+
+      gsap.set(card, {
+        rotateY,
+        y: translateY,
+        z: translateZ,
+        scale,
+        zIndex,
+        opacity,
+      });
     });
+  }
+
+  function updateCarouselPosition() {
+    const wheel = wheelRef.current;
+    if (!wheel) return;
+
+    const progress = progressRef.current.value;
+    const distance = scrollDistanceRef.current;
+    gsap.set(wheel, { x: -distance * progress });
+    updateTransforms();
+  }
+
+  function pauseLoop() {
+    if (autoTweenRef.current) {
+      autoTweenRef.current.pause();
+    }
+  }
+
+  function resumeLoop() {
+    if (currentCardRef.current) return;
+    if (autoTweenRef.current && !isPointerControlRef.current) {
+      autoTweenRef.current.resume();
+    }
   }
 
   function markOpen(isOpen) {
@@ -101,6 +165,8 @@ export default function WheelSlider() {
     currentCardRef.current = null;
     setActiveIdx(null);
     markOpen(false);
+    isPointerControlRef.current = false;
+    resumeLoop();
   }
 
   function onClickCard(i) {
@@ -117,68 +183,102 @@ export default function WheelSlider() {
       Flip.from(state, { duration: 0.6, ease: "power1.inOut", scale: true });
       setActiveIdx(i);
       markOpen(true);
+      pauseLoop();
     } else {
       closeCurrentCard();
     }
   }
 
   useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      setupWheel();
+    const ctx = gsap.context((context) => {
+      setupCarousel();
+      progressRef.current.value = 0;
+      updateCarouselPosition();
 
-      const pinDistance = () => window.innerHeight * 2.5;
+      if (autoTweenRef.current) {
+        autoTweenRef.current.kill();
+      }
 
-      // Pin del wrapper
-      ScrollTrigger.create({
+      autoTweenRef.current = gsap.to(progressRef.current, {
+        value: 1,
+        duration: 12,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+        onUpdate: updateCarouselPosition,
+      });
+
+      const pinDistance = () => window.innerHeight * 2.2;
+
+      const pinInstance = ScrollTrigger.create({
         trigger: pinRef.current,
         start: "top top",
         end: () => "+=" + pinDistance(),
         pin: true,
         pinSpacing: true,
         anticipatePin: 1,
+        onUpdate: () => updateCarouselPosition(),
+        onLeave: () => closeCurrentCard(),
+        onLeaveBack: () => closeCurrentCard(),
+        onEnter: () => closeCurrentCard(),
+        onEnterBack: () => closeCurrentCard(),
       });
 
-      // Rotación + cierre automático (cerrar siempre al mover scroll)
-      gsap.to(wheelRef.current, {
-        rotation: -360,
-        ease: "none",
-        scrollTrigger: {
-          trigger: pinRef.current,
-          start: "top top",
-          end: () => "+=" + pinDistance(),
-          scrub: 1,
-          onUpdate: () => {
-            if (currentCardRef.current) closeCurrentCard();
-          },
-          onLeaveBack: () => closeCurrentCard(),
-          onLeave: () => closeCurrentCard(),
-          onEnter: () => closeCurrentCard(),
-          onEnterBack: () => closeCurrentCard(),
-        },
-      });
-
-      // pulso flecha
-      gsap.to(".ws__scroll .arrow", {
+      const arrowTween = gsap.to(".ws__scroll .arrow", {
         y: 5,
         ease: "power1.inOut",
         repeat: -1,
         yoyo: true,
       });
 
-      ScrollTrigger.addEventListener("refreshInit", setupWheel);
+      ScrollTrigger.addEventListener("refreshInit", setupCarousel);
+      ScrollTrigger.addEventListener("refresh", updateCarouselPosition);
+
+      context.add(() => {
+        pinInstance.kill();
+        arrowTween.kill();
+        ScrollTrigger.removeEventListener("refreshInit", setupCarousel);
+        ScrollTrigger.removeEventListener("refresh", updateCarouselPosition);
+      });
     }, sectionRef);
 
-    const ro = new ResizeObserver(() => setupWheel());
+    const ro = new ResizeObserver(() => {
+      setupCarousel();
+      updateCarouselPosition();
+    });
     if (wheelRef.current) ro.observe(wheelRef.current);
+    if (sliderRef.current) ro.observe(sliderRef.current);
 
     return () => {
       ro.disconnect();
+      if (autoTweenRef.current) {
+        autoTweenRef.current.kill();
+        autoTweenRef.current = null;
+      }
       ctx.revert();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items.length]);
 
   const active = activeIdx != null ? items[activeIdx] : null;
+
+  const handlePointerMove = (event) => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+    const rect = slider.getBoundingClientRect();
+    const ratio = rect.width
+      ? (event.clientX - rect.left) / rect.width
+      : 0;
+    progressRef.current.value = gsap.utils.clamp(0, 1, ratio);
+    isPointerControlRef.current = true;
+    pauseLoop();
+    updateCarouselPosition();
+  };
+
+  const handlePointerLeave = () => {
+    isPointerControlRef.current = false;
+    resumeLoop();
+  };
 
   return (
     <section className="wheel-slider" ref={sectionRef} id="wheel-slider">
@@ -229,7 +329,7 @@ export default function WheelSlider() {
                     >
                       {/* Icono: ventana de navegador + globo */}
                       <svg viewBox="0 0 24 24" aria-hidden="true">
-                  
+
                         <rect x="3" y="4" width="18" height="16" rx="2" ry="2"
                               fill="none" stroke="currentColor" strokeWidth="2"/>
                         <line x1="3" y1="8" x2="21" y2="8"
@@ -252,11 +352,16 @@ export default function WheelSlider() {
         </div>
 
         {/* Rueda */}
-        <section className="ws__slider">
+        <section
+          className="ws__slider"
+          ref={sliderRef}
+          onPointerMove={handlePointerMove}
+          onPointerLeave={handlePointerLeave}
+        >
           <div className="wheel" ref={wheelRef} aria-hidden="true">
             {items.map((p, i) => (
               <div
-                className="wheel__card"
+                className={`wheel__card ${activeIdx === i ? "is-active" : ""}`}
                 key={`${p.name}-${i}`}
                 ref={(el) => (cardRefs.current[i] = el)}
                 onClick={() => onClickCard(i)}

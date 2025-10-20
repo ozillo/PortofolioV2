@@ -7,11 +7,12 @@
   --ws-bg: #0f1115;
   --ws-fg: #e9edf4;
 
-  /* 🔥 Cartas MUY PEGADAS */
-  --wheel-d: 140vw;
-  --wheel-max: 1300px;
-  --card-w: 31%;
-  --card-max: 240px;
+  /* 🔥 Carrusel horizontal */
+  --track-gap: clamp(18px, 4vw, 46px);
+  --track-pad: clamp(32px, 10vw, 160px);
+  --card-w: clamp(180px, 24vw, 280px);
+  --card-max: 320px;
+  --card-radius: 18px;
 
   /* Encabezado principal */
   --title-size: clamp(28px, 5vw, 64px);
@@ -21,7 +22,7 @@
   /* Imagen destacada & franja inferior */
   --header-w: 48vw;
   --header-max: 460px;
-  --strip-h: 28vh;
+  --strip-h: clamp(320px, 58vh, 460px);
 
   /* Caption */
   --cap-bg: rgba(0, 0, 0, 0.45);
@@ -43,18 +44,18 @@ html[data-theme="light"] .wheel-slider {
 
 @media (max-width: 600px) {
   .wheel-slider {
-    --wheel-d: 130vw;
-    --wheel-max: 1000px;
-    --card-w: 28%;
-    --card-max: 200px;
+    --track-gap: clamp(18px, 8vw, 36px);
+    --track-pad: clamp(20px, 8vw, 64px);
+    --card-w: clamp(160px, 70vw, 220px);
+    --card-max: 240px;
 
     --title-size: clamp(26px, 7vw, 38px);
     --subtitle-size: clamp(14px, 4vw, 16px);
     --subtitle-max: 75ch;
 
-    --header-w: 72vw;
-    --header-max: 560px;
-    --strip-h: 30vh;
+    --header-w: clamp(240px, 70vw, 360px);
+    --header-max: 420px;
+    --strip-h: clamp(320px, 72vh, 520px);
   }
 }
 
@@ -245,47 +246,72 @@ html[data-theme="light"] .wheel-slider .ws__capBtn--icon:hover {
   position: absolute;
   inset: auto 0 0 0;
   height: var(--strip-h);
+  display: grid;
+  place-items: center;
+  padding-inline: var(--track-pad);
+  perspective: 1400px;
   z-index: 1;
-  pointer-events: none;
+  pointer-events: auto;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.9) 12%, rgba(0, 0, 0, 0.9) 88%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.9) 12%, rgba(0, 0, 0, 0.9) 88%, transparent 100%);
 }
 
-/* Rueda */
+/* Rueda (carrusel horizontal) */
 .wheel {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: var(--wheel-d);
-  height: var(--wheel-d);
-  max-width: var(--wheel-max);
-  max-height: var(--wheel-max);
+  gap: var(--track-gap);
+  width: max-content;
+  will-change: transform;
+  pointer-events: auto;
+  transform-style: preserve-3d;
 }
 
 /* Cartas */
 .wheel__card {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: var(--card-w);
-  max-width: var(--card-max);
-  aspect-ratio: 1 / 1;
+  position: relative;
+  flex: 0 0 min(var(--card-w), var(--card-max));
+  width: min(var(--card-w), var(--card-max));
+  aspect-ratio: 3 / 4;
   cursor: pointer;
   pointer-events: auto;
+  transform-style: preserve-3d;
+  transition: transform 280ms ease, box-shadow 180ms ease, opacity 220ms ease;
+}
+.wheel__card::after {
+  content: "";
+  position: absolute;
+  inset: auto 10% -28px 10%;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(0, 0, 0, 0.28), transparent 70%);
+  transform: translateZ(-1px);
+  opacity: 0.35;
+  transition: opacity 200ms ease, transform 200ms ease;
 }
 .wheel__card img {
-  position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 14px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  border-radius: var(--card-radius);
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.35);
   will-change: transform;
   user-select: none;
   -webkit-user-drag: none;
+  transition: transform 260ms ease, filter 260ms ease;
+}
+.wheel__card.is-active {
+  opacity: 1 !important;
+}
+.wheel__card.is-active img {
+  transform: scale(1.03);
+  box-shadow: 0 28px 45px rgba(0, 0, 0, 0.45);
+}
+.wheel__card:hover::after {
+  opacity: 0.5;
+  transform: translateZ(-1px) scale(1.05);
 }
 
 /* Indicador Scroll */
