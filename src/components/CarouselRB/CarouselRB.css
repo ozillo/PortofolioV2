@@ -1,0 +1,150 @@
+.rb-carousel {
+  --rbc-bg: #0f1115;
+  --rbc-fg: #e9edf4;
+  --rbc-ring: rgba(99, 102, 241, .6);
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--rbc-bg);
+  color: var(--rbc-fg);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+html[data-theme="light"] .rb-carousel {
+  --rbc-bg: #f7f7f8;
+  --rbc-fg: #0d0f14;
+}
+
+.rbc-viewport {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: grab;
+}
+.rbc-viewport.is-dragging { cursor: grabbing; }
+
+.rbc-track {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+  will-change: transform;
+}
+
+.rbc-slide {
+  flex: 0 0 auto;
+}
+
+.rbc-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 16px 36px rgba(0,0,0,.28);
+  background: #111;
+  display: grid;
+}
+html[data-theme="light"] .rbc-card { background: #eaeef4; }
+
+.rbc-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+  transform: translateZ(0);
+}
+
+.rbc-caption {
+  position: absolute;
+  inset: auto 10px 10px 10px;
+  background: rgba(0,0,0,.42);
+  color: #fff;
+  padding: 10px 12px;
+  border-radius: 12px;
+  display: grid;
+  gap: 6px;
+  box-shadow: 0 8px 18px rgba(0,0,0,.24);
+}
+html[data-theme="light"] .rbc-caption {
+  background: rgba(255,255,255,.76);
+  color: #0d0f14;
+}
+
+.rbc-title {
+  margin: 0;
+  font-weight: 800;
+  font-size: 14px;
+}
+.rbc-desc {
+  margin: 0;
+  font-size: 12px;
+  opacity: .9;
+}
+
+/* Botón icono */
+.rbc-btn {
+  width: 38px; height: 38px;
+  display: inline-grid; place-items: center;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  text-decoration: none;
+  color: inherit;
+  background: transparent;
+}
+.rbc-btn:hover { background: rgba(255,255,255,.12); }
+html[data-theme="light"] .rbc-btn:hover { background: rgba(0,0,0,.08); }
+.rbc-btn:focus-visible { outline: 3px solid var(--rbc-ring); outline-offset: 2px; }
+
+/* Flechas “Chevron circular” */
+.rbc-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px; height: 46px;
+  display: grid; place-items: center;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.6);
+  color: #fff;
+  background: rgba(0,0,0,.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  cursor: pointer;
+  z-index: 5;
+}
+.rbc-arrow--left { left: 10px; }
+.rbc-arrow--right { right: 10px; }
+.rbc-arrow:hover { transform: translateY(-50%) scale(1.04); }
+.rbc-arrow:active { transform: translateY(-50%) scale(.98); }
+.rbc-arrow:focus-visible { outline: 3px solid var(--rbc-ring); outline-offset: 2px; }
+
+html[data-theme="light"] .rbc-arrow {
+  border-color: rgba(0,0,0,.35);
+  color: #0d0f14;
+  background: rgba(255,255,255,.7);
+}
+
+/* Dots */
+.rbc-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 4;
+}
+.rbc-dot {
+  width: 8px; height: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.45);
+  border: none;
+  cursor: pointer;
+}
+.rbc-dot.is-active { background: #fff; }
+html[data-theme="light"] .rbc-dot { background: rgba(0,0,0,.28); }
+html[data-theme="light"] .rbc-dot.is-active { background: #0d0f14; }

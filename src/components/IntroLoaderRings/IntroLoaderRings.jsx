@@ -21,14 +21,15 @@ export default function IntroLoaderRings({ show = true, duration = 2000, onDone 
   if (!show) return null;
 
   return (
-    <div ref={overlayRef} className="intro-loader-overlay" role="dialog" aria-label="Cargando">
-      <div className="rings anim-pan">
-        <div style={{ "--delay": 6 }} className="ring anim-zoomIn"></div>
-        <div style={{ "--delay": 4 }} className="ring anim-zoomIn"></div>
-        <div style={{ "--delay": 3 }} className="ring anim-zoomIn"></div>
-        <div style={{ "--delay": 2 }} className="ring anim-zoomIn"></div>
-        <div style={{ "--delay": 1 }} className="ring anim-zoomIn"></div>
-        <div style={{ "--delay": 0 }} className="ring anim-zoomIn"></div>
+    <div
+      ref={overlayRef}
+      className="intro-loader-overlay"
+      role="dialog"
+      aria-label="Cargando"
+    >
+      <div className="intro-loader-bar" aria-hidden="true">
+        <span className="intro-loader-bar__light" />
+        <span className="intro-loader-bar__shade" />
       </div>
     </div>
   );

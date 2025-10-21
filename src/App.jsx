@@ -9,13 +9,27 @@ import Footer from './components/Footer/Footer';
 import Hero from './sections/Hero/Hero';
 import About from './sections/About/About';
 import Skills from './sections/Skills/Skills';
-// import ProjectsSlider from './sections/ProjectsSlider/ProjectsSlider'; // ⛔️ sustituido
-import WheelSlider from './sections/WheelSlider/WheelSlider';            // ✅ nuevo
+
+// ⛔️ Deja de usar CarouselRB
+// import CarouselRB from './components/CarouselRB/CarouselRB';
+
+// ✅ Nuevo coverflow estilo CodePen (jh3y)
+import CarouselCoverflow from './components/CarouselCoverflow/CarouselCoverflow';
+import { SLIDES } from './data/projects';
+
 import PillNav from './components/PillNav';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
   const initialThemeRef = useRef(null);
+
+  // Mapear SLIDES -> items para el coverflow
+  const coverItems = SLIDES.map(p => ({
+    image: p.img,
+    title: p.name,
+    description: p.description || '',
+    link: p.url
+  }));
 
   // Inicializa Lenis + ScrollTrigger
   useEffect(() => {
@@ -33,7 +47,6 @@ export default function App() {
     function onScroll() { ScrollTrigger.update(); }
     lenis.on('scroll', onScroll);
 
-    // Primer refresh
     setTimeout(() => ScrollTrigger.refresh(), 0);
 
     return () => { lenis.off('scroll', onScroll); };
@@ -45,42 +58,41 @@ export default function App() {
     const body = document.body;
 
     if (initialThemeRef.current === null) {
-      initialThemeRef.current = html.getAttribute('data-theme'); // guarda tema inicial (puede ser null)
+      initialThemeRef.current = html.getAttribute('data-theme');
     }
 
     if (loading) {
-      html.setAttribute('data-theme', 'dark'); // fuerza oscuro durante el loader
+      html.setAttribute('data-theme', 'dark');
       const prevOverflow = body.style.overflow;
-      body.style.overflow = 'hidden';          // bloquea scroll
+      body.style.overflow = 'hidden';
       return () => { body.style.overflow = prevOverflow; };
     } else {
-      // restaura tema inicial (si existía)
       if (initialThemeRef.current === null) {
         html.removeAttribute('data-theme');
       } else {
         html.setAttribute('data-theme', initialThemeRef.current);
       }
-      // refresca triggers con el layout ya estable
       setTimeout(() => ScrollTrigger.refresh(), 0);
     }
   }, [loading]);
 
   return (
     <>
-      {/* Intro / Loader (oscuro por defecto) */}
       <IntroLoaderRings
         show={loading}
-        duration={2000}          // ajusta la duración si quieres
+        duration={2000}
         onDone={() => setLoading(false)}
       />
 
-      {/* <Navbar />  si lo quieres activo, descomenta */}
+      {/* <Navbar /> */}
+
       <PillNav
         items={[
           { label: 'Inicio',       ariaLabel: 'Ir a inicio',       link: '#hero' },
           { label: 'Sobre mí',     ariaLabel: 'Ir a sobre mí',     link: '#about' },
           { label: 'Habilidades',  ariaLabel: 'Ir a habilidades',  link: '#skills' },
-          { label: 'Galería',      ariaLabel: 'Ir a galería',      link: '#wheel-slider' }, // 🔁 nuevo destino
+          // 👇 ahora apunta al coverflow
+          { label: 'Proyectos',    ariaLabel: 'Ir a proyectos',    link: '#coverflow' },
         ]}
         socialItems={[
           { label: 'Twitter',  link: 'https://twitter.com' },
@@ -102,12 +114,15 @@ export default function App() {
           <Skills />
         </section>
 
-        {/* Slider tipo rueda con GSAP (tiene id="wheel-slider" internamente) */}
-        <WheelSlider />
-
-        {/* Si quieres volver a Proyectos en slider horizontal:
-        <ProjectsSlider />
-        */}
+        {/* ✅ Coverflow estilo CodePen */}
+        <section id="coverflow" className="section" style={{ height: '70vh', position: 'relative' }}>
+          <CarouselCoverflow
+            items={coverItems}
+            gap={1}              // separa más/menos en la curva (1–1.5 recomendable)
+            perspective={1200}   // distancia de cámara (px)
+            autoplayMs={3800}    // null para desactivar autoplay
+          />
+        </section>
       </main>
 
       <Footer />

@@ -41,7 +41,6 @@ export default function Skills() {
     <section id="skills" className="section skills" aria-label="Skills">
       <div className="skills__wrap">
         <header className="skills__header">
-          <p className="skills__eyebrow">UN PROBLEMA ES UNA OPORTUNIDAD PARA QUE HAGAS LO MEJOR QUE PUEDAS.</p>
           <h2 className="skills__title">Hablidades &amp; Experiencia</h2>
 
           <p className="skills__lead">

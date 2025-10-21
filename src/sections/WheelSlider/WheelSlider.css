@@ -75,7 +75,7 @@ html[data-theme="light"] .wheel-slider {
   width: 100%;
 }
 
-/* === Backdrop (modificado: sin blur y nítido) === */
+/* === Backdrop (sin blur, nítido) === */
 .ws__backdrop {
   position: absolute;
   inset: 0;
@@ -89,10 +89,10 @@ html[data-theme="light"] .wheel-slider {
   transition: background 200ms ease;
 }
 
-/* 🔥 Cuando hay carta abierta, cubre toda la pantalla pero sin blur */
+/* 🔥 Cuando hay carta abierta */
 .ws__pin.is-open .ws__backdrop {
   pointer-events: auto;
-  z-index: 2; /* debajo del header */
+  z-index: 2;
   background: rgba(0, 0, 0, 0.24);
 }
 
@@ -134,14 +134,15 @@ html[data-theme="light"] .wheel-slider {
   height: 72vh;
   display: grid;
   place-items: center;
-  z-index: 3; /* sobre el backdrop */
-  pointer-events: auto;
+  z-index: 3;
+  pointer-events: none; /* ✅ No bloquea clics del carrusel */
 }
 .ws__headerInner {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: min(var(--header-max), 92vw);
+  pointer-events: auto; /* ✅ Permite clics en caption/botón */
 }
 .ws__header img {
   width: var(--header-w);
@@ -152,8 +153,6 @@ html[data-theme="light"] .wheel-slider {
   box-shadow: var(--shadow);
   object-fit: cover;
   cursor: pointer;
-
-  /* 👇 evita borrosidad en FLIP animado */
   transform: translateZ(0);
   image-rendering: auto;
 }
@@ -216,7 +215,6 @@ html[data-theme="light"] .wheel-slider .ws__capBtn:hover {
   outline: 3px solid var(--ring);
   outline-offset: 3px;
 }
-
 .ws__capBtn--icon {
   width: 44px;
   height: 44px;
@@ -253,8 +251,20 @@ html[data-theme="light"] .wheel-slider .ws__capBtn--icon:hover {
   z-index: 1;
   pointer-events: auto;
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.9) 12%, rgba(0, 0, 0, 0.9) 88%, transparent 100%);
-  mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.9) 12%, rgba(0, 0, 0, 0.9) 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.9) 12%,
+    rgba(0, 0, 0, 0.9) 88%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.9) 12%,
+    rgba(0, 0, 0, 0.9) 88%,
+    transparent 100%
+  );
 }
 
 /* Rueda (carrusel horizontal) */
@@ -286,7 +296,11 @@ html[data-theme="light"] .wheel-slider .ws__capBtn--icon:hover {
   inset: auto 10% -28px 10%;
   height: 26px;
   border-radius: 50%;
-  background: radial-gradient(circle at center, rgba(0, 0, 0, 0.28), transparent 70%);
+  background: radial-gradient(
+    circle at center,
+    rgba(0, 0, 0, 0.28),
+    transparent 70%
+  );
   transform: translateZ(-1px);
   opacity: 0.35;
   transition: opacity 200ms ease, transform 200ms ease;
@@ -336,3 +350,23 @@ html[data-theme="light"] .wheel-slider .ws__capBtn--icon:hover {
   background-size: contain;
   background-repeat: no-repeat;
 }
+
+/* Mejora UX de arrastre */
+.ws__slider {
+  touch-action: pan-y;
+}
+.wheel {
+  cursor: grab;
+}
+.is-dragging .wheel {
+  cursor: grabbing;
+}
+.wheel,
+.wheel * {
+  user-select: none;
+}
+.ws__slider {
+  overscroll-behavior: contain;
+}
+.ws__header { pointer-events: none; }
+.ws__headerInner { pointer-events: auto; }
