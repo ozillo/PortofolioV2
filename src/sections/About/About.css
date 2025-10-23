@@ -1,19 +1,25 @@
+/* === SECCIÓN ABOUT centrada vertical y horizontalmente === */
+
 .about {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 10vh 2rem;
+  display: grid;
+  place-items: center;
+  min-height: calc(100vh - 80px); /* resta la altura del navbar */
+  padding: 0 2rem;               /* ya no usamos padding vertical */
   background: var(--bg);
   color: var(--fg);
 }
 
+/* Contenedor principal */
 .about__container {
   max-width: 900px;
+  width: min(900px, 100%);
+  margin-inline: auto;
   text-align: center;
   font-family: 'Poppins', sans-serif;
+  will-change: transform, opacity;
 }
 
+/* === Título === */
 .about__title {
   font-size: clamp(28px, 4vw, 56px);
   font-weight: 800;
@@ -22,6 +28,7 @@
   letter-spacing: 0.3px;
 }
 
+/* === Texto === */
 .about__text {
   font-size: clamp(15px, 1.4vw, 18px);
   line-height: 1.6;
@@ -30,7 +37,29 @@
   margin: 0 auto;
 }
 
+/* === Centrado forzado en desktop (por si el padre usa flex o grid distinto) === */
+@media (min-width: 992px) {
+  .about__container {
+    justify-self: center;
+    align-self: center;
+  }
+
+  .section .about__container {
+    justify-self: center;
+  }
+}
+
+/* === Tema claro === */
 html[data-theme='light'] .about {
   background: var(--bg-light);
   color: var(--fg-light);
+}
+
+/* === Accesibilidad: reducir movimiento === */
+@media (prefers-reduced-motion: reduce) {
+  .about__container {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
 }

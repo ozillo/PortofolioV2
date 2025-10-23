@@ -10,11 +10,11 @@ import Hero from './sections/Hero/Hero';
 import About from './sections/About/About';
 import Skills from './sections/Skills/Skills';
 
-// ⛔️ Deja de usar CarouselRB
-// import CarouselRB from './components/CarouselRB/CarouselRB';
+// ⛔️ Quitamos WheelSlider
+// import WheelSlider from './sections/WheelSlider/WheelSlider';
 
-// ✅ Nuevo coverflow estilo CodePen (jh3y)
-import CarouselCoverflow from './components/CarouselCoverflow/CarouselCoverflow';
+// ✅ Showcase estilo gsap.com
+import Showcase from './sections/Showcase/Showcase';
 import { SLIDES } from './data/projects';
 
 import PillNav from './components/PillNav';
@@ -22,14 +22,6 @@ import PillNav from './components/PillNav';
 export default function App() {
   const [loading, setLoading] = useState(true);
   const initialThemeRef = useRef(null);
-
-  // Mapear SLIDES -> items para el coverflow
-  const coverItems = SLIDES.map(p => ({
-    image: p.img,
-    title: p.name,
-    description: p.description || '',
-    link: p.url
-  }));
 
   // Inicializa Lenis + ScrollTrigger
   useEffect(() => {
@@ -47,6 +39,7 @@ export default function App() {
     function onScroll() { ScrollTrigger.update(); }
     lenis.on('scroll', onScroll);
 
+    // Primer refresh
     setTimeout(() => ScrollTrigger.refresh(), 0);
 
     return () => { lenis.off('scroll', onScroll); };
@@ -58,41 +51,43 @@ export default function App() {
     const body = document.body;
 
     if (initialThemeRef.current === null) {
-      initialThemeRef.current = html.getAttribute('data-theme');
+      initialThemeRef.current = html.getAttribute('data-theme'); // guarda tema inicial (puede ser null)
     }
 
     if (loading) {
-      html.setAttribute('data-theme', 'dark');
+      html.setAttribute('data-theme', 'dark'); // fuerza oscuro durante el loader
       const prevOverflow = body.style.overflow;
-      body.style.overflow = 'hidden';
+      body.style.overflow = 'hidden';          // bloquea scroll
       return () => { body.style.overflow = prevOverflow; };
     } else {
+      // restaura tema inicial (si existía)
       if (initialThemeRef.current === null) {
         html.removeAttribute('data-theme');
       } else {
         html.setAttribute('data-theme', initialThemeRef.current);
       }
+      // refresca triggers con el layout ya estable
       setTimeout(() => ScrollTrigger.refresh(), 0);
     }
   }, [loading]);
 
   return (
     <>
+      {/* Intro / Loader (oscuro por defecto) */}
       <IntroLoaderRings
         show={loading}
         duration={2000}
         onDone={() => setLoading(false)}
       />
 
-      {/* <Navbar /> */}
-
+      {/* <Navbar />  si lo quieres activo, descomenta */}
       <PillNav
         items={[
           { label: 'Inicio',       ariaLabel: 'Ir a inicio',       link: '#hero' },
           { label: 'Sobre mí',     ariaLabel: 'Ir a sobre mí',     link: '#about' },
           { label: 'Habilidades',  ariaLabel: 'Ir a habilidades',  link: '#skills' },
-          // 👇 ahora apunta al coverflow
-          { label: 'Proyectos',    ariaLabel: 'Ir a proyectos',    link: '#coverflow' },
+          // 👉 ahora apunta al Showcase
+          { label: 'Proyectos',    ariaLabel: 'Ir a proyectos',    link: '#showcase' },
         ]}
         socialItems={[
           { label: 'Twitter',  link: 'https://twitter.com' },
@@ -114,14 +109,9 @@ export default function App() {
           <Skills />
         </section>
 
-        {/* ✅ Coverflow estilo CodePen */}
-        <section id="coverflow" className="section" style={{ height: '70vh', position: 'relative' }}>
-          <CarouselCoverflow
-            items={coverItems}
-            gap={1}              // separa más/menos en la curva (1–1.5 recomendable)
-            perspective={1200}   // distancia de cámara (px)
-            autoplayMs={3800}    // null para desactivar autoplay
-          />
+        {/* ✅ Showcase tipo GSAP.com (móvil: carrusel horizontal con flechas / desktop: grid 3 col) */}
+        <section id="showcase" className="section">
+          <Showcase items={SLIDES} />
         </section>
       </main>
 
