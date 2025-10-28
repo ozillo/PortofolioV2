@@ -1,0 +1,91 @@
+/* Colores y sombras dependientes del tema (tu useTheme ya pone data-theme en :root) */
+:root[data-theme="light"] {
+  --split-bg: #f6f7fb;
+  --split-text: #0b0b0b;
+  --split-shadow-1: 0 16px 40px rgba(0, 0, 0, 0.18);
+  --split-shadow-2: 0 24px 60px rgba(0, 0, 0, 0.22);
+}
+
+:root[data-theme="dark"] {
+  --split-bg: #0b0b0b;
+  --split-text: #ffffff;
+  --split-shadow-1: 0 16px 40px rgba(0, 0, 0, 0.25);
+  --split-shadow-2: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.split-section {
+  height: 300vh; /* espacio para scrollear */
+  position: relative;
+  background: var(--split-bg);
+}
+
+.split-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: min(1200px, 92vw);
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+}
+
+.panel {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: min(1000px, 88vw);
+  height: min(64vh, 72vw);
+  background-size: cover;
+  background-position: center;
+  border-radius: 0px;
+  will-change: transform, box-shadow, border-radius;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  transition: box-shadow 0.25s ease;
+}
+
+/* Recorte en tercios de la misma imagen */
+.panel-left {
+  clip-path: polygon(0% 0%, 33.333% 0%, 33.333% 100%, 0% 100%);
+  z-index: 1;
+}
+.panel-center {
+  clip-path: polygon(33.333% 0%, 66.666% 0%, 66.666% 100%, 33.333% 100%);
+  z-index: 2;
+}
+.panel-right {
+  clip-path: polygon(66.666% 0%, 100% 0%, 100% 100%, 66.666% 100%);
+  z-index: 1;
+}
+
+.split-title {
+  position: absolute;
+  bottom: clamp(16px, 4vh, 48px);
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  color: var(--split-text);
+  font-family: system-ui, ui-sans-serif, Inter, Roboto, "Segoe UI", Arial;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+
+.split-title h2 {
+  font-size: clamp(20px, 3.4vw, 42px);
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+.split-title p {
+  opacity: 0.8;
+  font-size: clamp(12px, 1.6vw, 16px);
+  margin: 0;
+}
+
+/* Responsivo */
+@media (max-width: 640px) {
+  .panel {
+    width: 94vw;
+    height: 48vh;
+  }
+  .split-title { bottom: 16px; }
+}

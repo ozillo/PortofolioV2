@@ -1,10 +1,15 @@
-/* === SECCIÓN ABOUT centrada vertical y horizontalmente === */
+/* === SECCIÓN ABOUT (centrada sí o sí) === */
+
+:root {
+  --navbar-h: 80px; /* ajusta si tu navbar mide otra cosa */
+}
 
 .about {
-  display: grid;
-  place-items: center;
-  min-height: calc(100vh - 80px); /* resta la altura del navbar */
-  padding: 0 2rem;               /* ya no usamos padding vertical */
+  width: 100%;
+  display: grid !important;
+  place-items: center !important;             /* centra horizontal y vertical */
+  min-height: calc(100vh - var(--navbar-h));
+  padding: 0 2rem;                            /* sin padding vertical que desplace */
   background: var(--bg);
   color: var(--fg);
 }
@@ -13,13 +18,16 @@
 .about__container {
   max-width: 900px;
   width: min(900px, 100%);
-  margin-inline: auto;
+  margin-left: auto !important;               /* fuerza centrado incluso si el padre alinea a start */
+  margin-right: auto !important;
   text-align: center;
   font-family: 'Poppins', sans-serif;
   will-change: transform, opacity;
+  justify-self: center !important;            /* por si el padre es grid */
+  align-self: center !important;
 }
 
-/* === Título === */
+/* Título */
 .about__title {
   font-size: clamp(28px, 4vw, 56px);
   font-weight: 800;
@@ -28,38 +36,51 @@
   letter-spacing: 0.3px;
 }
 
-/* === Texto === */
+/* Texto */
 .about__text {
   font-size: clamp(15px, 1.4vw, 18px);
   line-height: 1.6;
   opacity: 0.9;
   max-width: 70ch;
-  margin: 0 auto;
+  margin: 0 auto;                             /* asegura centrado del párrafo */
 }
 
-/* === Centrado forzado en desktop (por si el padre usa flex o grid distinto) === */
-@media (min-width: 992px) {
-  .about__container {
-    justify-self: center;
-    align-self: center;
-  }
-
-  .section .about__container {
-    justify-self: center;
-  }
+/* ===== Overrides contra estilos del contenedor padre (.section) ===== */
+/* Si tu App envuelve cada sección en <section id="about" class="section">,
+   estos resets neutralizan alineaciones a la izquierda. */
+#about.section {
+  display: block !important;                  /* evita grids/flex del contenedor global */
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+#about.section > .about {
+  display: grid !important;
+  place-items: center !important;
+}
+#about.section > * {
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
-/* === Tema claro === */
+/* Tema claro */
 html[data-theme='light'] .about {
   background: var(--bg-light);
   color: var(--fg-light);
 }
 
-/* === Accesibilidad: reducir movimiento === */
+/* Accesibilidad: reducir movimiento */
 @media (prefers-reduced-motion: reduce) {
   .about__container {
     transition: none !important;
     transform: none !important;
     opacity: 1 !important;
+  }
+}
+
+/* Pequeño respiro en móvil si lo ves demasiado “pegado” */
+@media (max-width: 768px) {
+  .about {
+    padding: 6vh 1.5rem;
+    min-height: auto; /* en móvil no forzamos el alto completo */
   }
 }

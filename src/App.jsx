@@ -1,29 +1,28 @@
-import { useEffect, useRef, useState } from 'react';
-import { initLenis } from './lib/lenis';
-import { ScrollTrigger } from './lib/gsap';
+import { useEffect, useRef, useState } from "react";
+import { initLenis } from "./lib/lenis";
+import { ScrollTrigger } from "./lib/gsap";
 
-import IntroLoaderRings from './components/IntroLoaderRings/IntroLoaderRings';
+import IntroLoaderRings from "./components/IntroLoaderRings/IntroLoaderRings";
 
-import Navbar from './components/Navbar/Navbar';
-import Footer from './components/Footer/Footer';
-import Hero from './sections/Hero/Hero';
-import About from './sections/About/About';
-import Skills from './sections/Skills/Skills';
+import Navbar from "./components/Navbar/Navbar";
+import Footer from "./components/Footer/Footer";
+import Hero from "./sections/Hero/Hero";
+import About from "./sections/About/About";
+import Skills from "./sections/Skills/Skills";
 
-// ⛔️ Quitamos WheelSlider
-// import WheelSlider from './sections/WheelSlider/WheelSlider';
+// ⛔️ Efecto dividido eliminado para esta sección
+// import ImageSplitScroll from "./sections/ImageSplitScroll/ImageSplitScroll";
 
-// ✅ Showcase estilo gsap.com
-import Showcase from './sections/Showcase/Showcase';
-import { SLIDES } from './data/projects';
+// ✅ Carrusel con Swiper React
+import ProjectsCarousel from "./sections/ProjectsCarousel/ProjectsCarousel";
 
-import PillNav from './components/PillNav';
+import PillNav from "./components/PillNav";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
   const initialThemeRef = useRef(null);
 
-  // Inicializa Lenis + ScrollTrigger
+  // ✅ Inicializa Lenis + ScrollTrigger
   useEffect(() => {
     const lenis = initLenis();
 
@@ -32,67 +31,75 @@ export default function App() {
         return arguments.length ? window.scrollTo(0, value) : window.scrollY;
       },
       getBoundingClientRect() {
-        return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
-      }
+        return {
+          top: 0,
+          left: 0,
+          width: window.innerWidth,
+          height: window.innerHeight,
+        };
+      },
     });
 
-    function onScroll() { ScrollTrigger.update(); }
-    lenis.on('scroll', onScroll);
+    function onScroll() {
+      ScrollTrigger.update();
+    }
+    lenis.on("scroll", onScroll);
 
-    // Primer refresh
     setTimeout(() => ScrollTrigger.refresh(), 0);
 
-    return () => { lenis.off('scroll', onScroll); };
+    return () => {
+      lenis.off("scroll", onScroll);
+    };
   }, []);
 
-  // Modo oscuro mientras carga + bloqueo de scroll
+  // ✅ Modo oscuro durante carga + bloqueo scroll
   useEffect(() => {
     const html = document.documentElement;
     const body = document.body;
 
     if (initialThemeRef.current === null) {
-      initialThemeRef.current = html.getAttribute('data-theme'); // guarda tema inicial (puede ser null)
+      initialThemeRef.current = html.getAttribute("data-theme");
     }
 
     if (loading) {
-      html.setAttribute('data-theme', 'dark'); // fuerza oscuro durante el loader
+      html.setAttribute("data-theme", "dark");
       const prevOverflow = body.style.overflow;
-      body.style.overflow = 'hidden';          // bloquea scroll
-      return () => { body.style.overflow = prevOverflow; };
+      body.style.overflow = "hidden";
+      return () => {
+        body.style.overflow = prevOverflow;
+      };
     } else {
-      // restaura tema inicial (si existía)
       if (initialThemeRef.current === null) {
-        html.removeAttribute('data-theme');
+        html.removeAttribute("data-theme");
       } else {
-        html.setAttribute('data-theme', initialThemeRef.current);
+        html.setAttribute("data-theme", initialThemeRef.current);
       }
-      // refresca triggers con el layout ya estable
       setTimeout(() => ScrollTrigger.refresh(), 0);
     }
   }, [loading]);
 
   return (
     <>
-      {/* Intro / Loader (oscuro por defecto) */}
+      {/* Loader inicial */}
       <IntroLoaderRings
         show={loading}
         duration={2000}
         onDone={() => setLoading(false)}
       />
 
-      {/* <Navbar />  si lo quieres activo, descomenta */}
+      {/* <Navbar /> — descomenta si quieres mostrarlo */}
       <PillNav
         items={[
-          { label: 'Inicio',       ariaLabel: 'Ir a inicio',       link: '#hero' },
-          { label: 'Sobre mí',     ariaLabel: 'Ir a sobre mí',     link: '#about' },
-          { label: 'Habilidades',  ariaLabel: 'Ir a habilidades',  link: '#skills' },
-          // 👉 ahora apunta al Showcase
-          { label: 'Proyectos',    ariaLabel: 'Ir a proyectos',    link: '#showcase' },
+          { label: "Inicio", ariaLabel: "Ir a inicio", link: "#hero" },
+          { label: "Sobre mí", ariaLabel: "Ir a sobre mí", link: "#about" },
+          { label: "Habilidades", ariaLabel: "Ir a habilidades", link: "#skills" },
+          // ✅ mantiene “Proyectos” apuntando a #projects
+          { label: "Proyectos", ariaLabel: "Ir a proyectos", link: "#projects" },
         ]}
         socialItems={[
-          { label: 'Twitter',  link: 'https://twitter.com' },
-          { label: 'GitHub',   link: 'https://github.com' },
-          { label: 'LinkedIn', link: 'https://linkedin.com' },
+          { label: "Twitter", link: "https://twitter.com" },
+          { label: "GitHub", link: "https://github.com" },
+          { label: "LinkedIn", link: "https://linkedin.com" },
         ]}
       />
 
@@ -109,9 +116,9 @@ export default function App() {
           <Skills />
         </section>
 
-        {/* ✅ Showcase tipo GSAP.com (móvil: carrusel horizontal con flechas / desktop: grid 3 col) */}
-        <section id="showcase" className="section">
-          <Showcase items={SLIDES} />
+        {/* ✅ Nueva sección "Proyectos" como carrusel Swiper */}
+        <section id="projects" className="section">
+          <ProjectsCarousel />
         </section>
       </main>
 

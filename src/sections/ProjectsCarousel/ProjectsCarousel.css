@@ -1,0 +1,95 @@
+:root[data-theme="light"] {
+  --pc-title: #0b0b0b;
+  --pc-muted: #5b5b5b;
+  --pc-bullet: #c9ced6;
+  --pc-bullet-active: #6f8cff;
+  --pc-nav-bg: rgba(0,0,0,0.06);
+  --pc-nav-color: #0b0b0b;
+  --pc-nav-border: rgba(0,0,0,0.08);
+  --pc-nav-bg-hover: rgba(111,140,255,0.12);
+}
+:root[data-theme="dark"] {
+  --pc-title: #f4f5f7;
+  --pc-muted: #b8c0cc;
+  --pc-bullet: #404651;
+  --pc-bullet-active: #8ea2ff;
+  --pc-nav-bg: rgba(255,255,255,0.08);
+  --pc-nav-color: #ffffff;
+  --pc-nav-border: rgba(255,255,255,0.12);
+  --pc-nav-bg-hover: rgba(142,162,255,0.18);
+}
+
+.projects-carousel {
+  width: min(1200px, 92vw);
+  margin: 0 auto;
+  padding: clamp(24px, 6vw, 48px) 0;
+}
+
+.pc-header {
+  text-align: center;
+  margin-bottom: clamp(16px, 4vw, 28px);
+}
+.pc-header h2 {
+  font-size: clamp(24px, 4.2vw, 40px);
+  margin: 0 0 6px;
+  color: var(--pc-title);
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+.pc-header p {
+  margin: 0;
+  color: var(--pc-muted);
+  font-size: clamp(14px, 1.8vw, 16px);
+}
+
+/* wrapper para flechas */
+.pc-swiper-wrap {
+  position: relative;
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+  gap: 8px;
+}
+@media (max-width: 640px) {
+  .pc-swiper-wrap { grid-template-columns: 1fr; }
+}
+
+/* Swiper tamaño */
+.pc-swiper {
+  width: 100%;
+}
+
+/* Slide: evita estirar la card en altura */
+.pc-slide {
+  display: grid;
+}
+
+/* Flechas personalizadas */
+.pc-nav {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid var(--pc-nav-border);
+  background: var(--pc-nav-bg);
+  color: var(--pc-nav-color);
+  cursor: pointer;
+  transition: background .2s ease, transform .15s ease;
+}
+.pc-nav:hover { background: var(--pc-nav-bg-hover); transform: translateY(-1px); }
+.pc-prev { justify-self: start; }
+.pc-next { justify-self: end; }
+
+@media (max-width: 640px) {
+  .pc-nav { display: none; } /* en móvil usamos solo paginación + drag */
+}
+
+/* Paginación Swiper (bullets) */
+.swiper-pagination-bullets .swiper-pagination-bullet {
+  background: var(--pc-bullet);
+  opacity: 1;
+}
+.swiper-pagination-bullets .swiper-pagination-bullet-active {
+  background: var(--pc-bullet-active);
+}
