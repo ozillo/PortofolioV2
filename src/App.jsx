@@ -10,11 +10,8 @@ import Hero from "./sections/Hero/Hero";
 import About from "./sections/About/About";
 import Skills from "./sections/Skills/Skills";
 
-// ⛔️ Efecto dividido eliminado para esta sección
-// import ImageSplitScroll from "./sections/ImageSplitScroll/ImageSplitScroll";
-
-// ✅ Carrusel con Swiper React
-import ProjectsCarousel from "./sections/ProjectsCarousel/ProjectsCarousel";
+// ✅ Showcase integrado (en lugar del efecto de scroll)
+import Showcase from "./sections/Showcase/Showcase";
 
 import PillNav from "./components/PillNav";
 
@@ -87,13 +84,15 @@ export default function App() {
         onDone={() => setLoading(false)}
       />
 
-      {/* <Navbar /> — descomenta si quieres mostrarlo */}
+      {/* Navbar opcional (descomenta si lo quieres activo) */}
+      {/* <Navbar /> */}
+
+      {/* Navegación tipo pastillas */}
       <PillNav
         items={[
           { label: "Inicio", ariaLabel: "Ir a inicio", link: "#hero" },
           { label: "Sobre mí", ariaLabel: "Ir a sobre mí", link: "#about" },
           { label: "Habilidades", ariaLabel: "Ir a habilidades", link: "#skills" },
-          // ✅ mantiene “Proyectos” apuntando a #projects
           { label: "Proyectos", ariaLabel: "Ir a proyectos", link: "#projects" },
         ]}
         socialItems={[
@@ -104,24 +103,28 @@ export default function App() {
       />
 
       <main aria-busy={loading}>
+        {/* === Sección Hero === */}
         <section id="hero" className="section">
           <Hero />
         </section>
 
+        {/* === Sección Sobre mí === */}
         <section id="about" className="section">
           <About />
         </section>
 
+        {/* === Sección Habilidades === */}
         <section id="skills" className="section">
           <Skills />
         </section>
 
-        {/* ✅ Nueva sección "Proyectos" como carrusel Swiper */}
+        {/* === Nueva Sección Showcase (Proyectos) === */}
         <section id="projects" className="section">
-          <ProjectsCarousel />
+          <Showcase />
         </section>
       </main>
 
+      {/* === Footer === */}
       <Footer />
     </>
   );

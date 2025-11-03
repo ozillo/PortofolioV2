@@ -1,26 +1,5 @@
-:root[data-theme="light"] {
-  --pc-title: #0b0b0b;
-  --pc-muted: #5b5b5b;
-  --pc-bullet: #c9ced6;
-  --pc-bullet-active: #6f8cff;
-  --pc-nav-bg: rgba(0,0,0,0.06);
-  --pc-nav-color: #0b0b0b;
-  --pc-nav-border: rgba(0,0,0,0.08);
-  --pc-nav-bg-hover: rgba(111,140,255,0.12);
-}
-:root[data-theme="dark"] {
-  --pc-title: #f4f5f7;
-  --pc-muted: #b8c0cc;
-  --pc-bullet: #404651;
-  --pc-bullet-active: #8ea2ff;
-  --pc-nav-bg: rgba(255,255,255,0.08);
-  --pc-nav-color: #ffffff;
-  --pc-nav-border: rgba(255,255,255,0.12);
-  --pc-nav-bg-hover: rgba(142,162,255,0.18);
-}
-
 .projects-carousel {
-  width: min(1200px, 92vw);
+  width: min(var(--container-width), 92vw);
   margin: 0 auto;
   padding: clamp(24px, 6vw, 48px) 0;
 }
@@ -32,64 +11,74 @@
 .pc-header h2 {
   font-size: clamp(24px, 4.2vw, 40px);
   margin: 0 0 6px;
-  color: var(--pc-title);
+  color: var(--fg);
   font-weight: 800;
   letter-spacing: 0.2px;
 }
 .pc-header p {
   margin: 0;
-  color: var(--pc-muted);
+  color: var(--muted);
   font-size: clamp(14px, 1.8vw, 16px);
 }
 
-/* wrapper para flechas */
+/* ---- Swiper layout ---- */
 .pc-swiper-wrap {
   position: relative;
-  display: grid;
-  grid-template-columns: 40px 1fr 40px;
-  align-items: center;
-  gap: 8px;
-}
-@media (max-width: 640px) {
-  .pc-swiper-wrap { grid-template-columns: 1fr; }
-}
-
-/* Swiper tamaño */
-.pc-swiper {
   width: 100%;
 }
-
-/* Slide: evita estirar la card en altura */
+.pc-swiper {
+  width: 100%;
+  overflow: visible; /* importante para que flechas no se corten */
+}
 .pc-slide {
   display: grid;
 }
 
-/* Flechas personalizadas */
+/* ---- Flechas ---- */
 .pc-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
   display: inline-grid;
   place-items: center;
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  border: 1px solid var(--pc-nav-border);
-  background: var(--pc-nav-bg);
-  color: var(--pc-nav-color);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--fg);
   cursor: pointer;
-  transition: background .2s ease, transform .15s ease;
+  transition: background 0.2s ease, transform 0.15s ease, opacity 0.2s ease;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.18);
 }
-.pc-nav:hover { background: var(--pc-nav-bg-hover); transform: translateY(-1px); }
-.pc-prev { justify-self: start; }
-.pc-next { justify-self: end; }
+.pc-nav:hover {
+  background: var(--surface-strong);
+  transform: translateY(-50%) translateY(-1px);
+}
+.pc-prev { left: -8px; }
+.pc-next { right: -8px; }
 
-@media (max-width: 640px) {
-  .pc-nav { display: none; } /* en móvil usamos solo paginación + drag */
+/* 👉 opción B: ocultar flechas <480px (solo drag + bullets) */
+@media (max-width: 479px) {
+  .pc-nav { display: none; }
+}
+/* 480–640px: flechas visibles pero más pequeñas, dentro del carrusel */
+@media (min-width: 480px) and (max-width: 640px) {
+  .pc-nav {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+  .pc-prev { left: 8px; }
+  .pc-next { right: 8px; }
 }
 
-/* Paginación Swiper (bullets) */
+/* ---- Bullets ---- */
 .swiper-pagination-bullets .swiper-pagination-bullet {
-  background: var(--pc-bullet);
+  background: var(--surface-strong);
   opacity: 1;
 }
 .swiper-pagination-bullets .swiper-pagination-bullet-active {
-  background: var(--pc-bullet-active);
+  background: var(--accent);
 }

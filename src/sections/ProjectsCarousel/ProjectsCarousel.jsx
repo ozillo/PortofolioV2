@@ -26,36 +26,43 @@ export default function ProjectsCarousel({
       </header>
 
       <div className="pc-swiper-wrap">
-        {/* Botones externos (opcional) */}
+        {/* Botones personalizados */}
         <button ref={prevRef} className="pc-nav pc-prev" aria-label="Anterior">
-          {/* chevron izq */}
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-            <path d="M15.5 19 8.5 12l7-7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path
+              d="M15.5 19 8.5 12l7-7"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </button>
 
         <Swiper
           modules={[Navigation, Pagination, A11y, Keyboard]}
-          // Conecta los botones externos una vez que exista el swiper
           onBeforeInit={(swiper) => {
-            // @ts-ignore
             swiper.params.navigation.prevEl = prevRef.current;
-            // @ts-ignore
             swiper.params.navigation.nextEl = nextRef.current;
+          }}
+          onInit={(swiper) => {
+            swiper.params.navigation.prevEl = prevRef.current;
+            swiper.params.navigation.nextEl = nextRef.current;
+            swiper.navigation.init();
+            swiper.navigation.update();
           }}
           navigation={{ enabled: true }}
           pagination={{ clickable: true }}
           keyboard={{ enabled: true }}
-          // touch y arrastre
           spaceBetween={16}
           slidesPerView={1.1}
           centeredSlides={true}
           centeredSlidesBounds={true}
-          // breakpoints para columnas
           breakpoints={{
             640: { slidesPerView: 1.3, spaceBetween: 18, centeredSlides: true },
-            768: { slidesPerView: 2,   spaceBetween: 18, centeredSlides: false },
-            1024:{ slidesPerView: 3,   spaceBetween: 22, centeredSlides: false },
+            768: { slidesPerView: 2, spaceBetween: 18, centeredSlides: false },
+            1024: { slidesPerView: 3, spaceBetween: 22, centeredSlides: false },
           }}
           className="pc-swiper"
         >
@@ -67,9 +74,15 @@ export default function ProjectsCarousel({
         </Swiper>
 
         <button ref={nextRef} className="pc-nav pc-next" aria-label="Siguiente">
-          {/* chevron der */}
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-            <path d="M8.5 5 15.5 12l-7 7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path
+              d="M8.5 5 15.5 12l-7 7"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </button>
       </div>

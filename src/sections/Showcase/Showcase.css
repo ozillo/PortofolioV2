@@ -7,6 +7,7 @@
   --text-dim: color-mix(in oklab, canvasText 70%, #888 30%);
 }
 
+/* 🌙 Tema oscuro */
 :root[data-theme="dark"],
 [data-theme="dark"] :root {
   --card-bg: color-mix(in oklab, #0b0b12 78%, transparent);
@@ -47,7 +48,7 @@
   .show-grid { display: none; }
 }
 
-/* ===== Mobile Carousel ===== */
+/* ===== Mobile/Tablet Carousel ===== */
 .show-mobile {
   display: grid;
   grid-template-columns: 44px 1fr 44px;
@@ -151,3 +152,26 @@
 .show-btn:hover { transform: translateY(-1px); }
 .show-btn:active { transform: translateY(0); }
 .show-btn svg { width: 16px; height: 16px; display: block; }
+
+/* ====== 📱 Extras de separación en responsive ====== */
+@media (max-width: 991px) {
+  /* más gap general entre tarjetas del carrusel */
+  :root {
+    --gap: clamp(20px, 5.5vw, 36px);
+  }
+
+  /* respiro lateral para que no “toquen” los bordes */
+  .show-track {
+    padding-inline: clamp(12px, 4vw, 24px);
+  }
+
+  /* un poco más de espacio entre imagen y meta */
+  .show-card {
+    gap: 14px;
+  }
+
+  /* y un pelín de padding al bloque de meta */
+  .show-meta {
+    padding-inline: 4px;
+  }
+}
