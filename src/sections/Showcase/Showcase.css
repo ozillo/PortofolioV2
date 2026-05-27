@@ -44,8 +44,13 @@
 /* ══════════════════════════
    3D Cube
 ══════════════════════════ */
-.sc-cube-wrap {
+/* Wrapper that holds cube + lateral nav buttons on mobile */
+.sc-cube-area {
   flex: 0 0 auto;
+  position: relative;
+}
+
+.sc-cube-wrap {
   --cw: clamp(260px, 38vw, 500px);
   --ch: calc(var(--cw) * 0.625);
   --ctz: calc(var(--cw) / 2);
@@ -53,6 +58,11 @@
   height: var(--ch);
   perspective: 1400px;
   perspective-origin: 50% 50%;
+}
+
+/* Mobile lateral buttons — hidden on desktop */
+.sc-mobile-btn {
+  display: none;
 }
 
 .sc-cube {
@@ -278,6 +288,45 @@
     align-items: center;
     justify-content: flex-start;
     padding-top: calc(var(--nav-height, 64px) + 24px);
+  }
+
+  /* Lateral arrow buttons */
+  .sc-mobile-btn {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: color-mix(in oklab, var(--surface) 80%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--fg);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease, opacity 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    z-index: 2;
+  }
+
+  .sc-mobile-btn--prev { left: -22px; }
+  .sc-mobile-btn--next { right: -22px; }
+
+  .sc-mobile-btn:active:not(:disabled) {
+    transform: translateY(-50%) scale(0.92);
+  }
+
+  .sc-mobile-btn:disabled {
+    opacity: 0.2;
+    cursor: default;
+  }
+
+  .sc-mobile-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
   }
 
   .sc-section-label {

@@ -16,12 +16,30 @@ function ArrowIcon() {
   );
 }
 
+function ChevronIcon({ dir }) {
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
+      stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
+      strokeLinejoin="round" aria-hidden="true">
+      {dir === "left"
+        ? <polyline points="15 18 9 12 15 6" />
+        : <polyline points="9 6 15 12 9 18" />}
+    </svg>
+  );
+}
+
 export default function Showcase() {
-  const outerRef   = useRef(null);
-  const cubeRef    = useRef(null);
-  const panelRefs  = useRef([]);
-  const dotRefs    = useRef([]);
-  const counterRef = useRef(null);
+  const outerRef    = useRef(null);
+  const cubeRef     = useRef(null);
+  const panelRefs   = useRef([]);
+  const dotRefs     = useRef([]);
+  const counterRef  = useRef(null);
+  const prevBtnRef  = useRef(null);
+  const nextBtnRef  = useRef(null);
+  const currentIdxRef = useRef(0);
+
+  const goPrev = () => scrollToProject(Math.max(0, currentIdxRef.current - 1));
+  const goNext = () => scrollToProject(Math.min(N - 1, currentIdxRef.current + 1));
 
   const scrollToProject = (idx) => {
     const outer = outerRef.current;
@@ -55,6 +73,7 @@ export default function Showcase() {
           scrub: 1.4,
           onUpdate(self) {
             const idx = Math.min(Math.round(self.progress * (N - 1)), N - 1);
+            currentIdxRef.current = idx;
             dots.forEach((el, i) => el.classList.toggle("is-active", i === idx));
             panels.forEach((el, i) => {
               el.setAttribute("aria-hidden", i !== idx ? "true" : "false");
@@ -64,6 +83,8 @@ export default function Showcase() {
             if (counterRef.current) {
               counterRef.current.textContent = String(idx + 1).padStart(2, "0");
             }
+            if (prevBtnRef.current) prevBtnRef.current.disabled = idx === 0;
+            if (nextBtnRef.current) nextBtnRef.current.disabled = idx === N - 1;
           },
         },
       });
@@ -104,15 +125,34 @@ export default function Showcase() {
         {/* Main scene */}
         <div className="sc-scene">
 
-          {/* 3D Cube */}
-          <div className="sc-cube-wrap" aria-hidden="true">
-            <div className="sc-cube" ref={cubeRef}>
-              {SLIDES.map((item, i) => (
-                <div key={item.id} className={`sc-face sc-face--${i}`}>
-                  <img src={item.img} alt={item.name} loading="lazy" draggable="false" />
-                </div>
-              ))}
+          {/* 3D Cube + lateral nav buttons (mobile only) */}
+          <div className="sc-cube-area">
+            <div className="sc-cube-wrap" aria-hidden="true">
+              <div className="sc-cube" ref={cubeRef}>
+                {SLIDES.map((item, i) => (
+                  <div key={item.id} className={`sc-face sc-face--${i}`}>
+                    <img src={item.img} alt={item.name} loading="lazy" draggable="false" />
+                  </div>
+                ))}
+              </div>
             </div>
+            <button
+              ref={prevBtnRef}
+              className="sc-mobile-btn sc-mobile-btn--prev"
+              aria-label="Proyecto anterior"
+              disabled
+              onClick={goPrev}
+            >
+              <ChevronIcon dir="left" />
+            </button>
+            <button
+              ref={nextBtnRef}
+              className="sc-mobile-btn sc-mobile-btn--next"
+              aria-label="Proyecto siguiente"
+              onClick={goNext}
+            >
+              <ChevronIcon dir="right" />
+            </button>
           </div>
 
           {/* Info panels */}
