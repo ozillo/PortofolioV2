@@ -4,13 +4,11 @@ import { ScrollTrigger } from "./lib/gsap";
 
 import IntroLoaderRings from "./components/IntroLoaderRings/IntroLoaderRings";
 
-import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import Hero from "./sections/Hero/Hero";
 import About from "./sections/About/About";
 import Skills from "./sections/Skills/Skills";
 
-// ✅ Showcase integrado (en lugar del efecto de scroll)
 import Showcase from "./sections/Showcase/Showcase";
 
 import PillNav from "./components/PillNav";
@@ -19,7 +17,6 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const initialThemeRef = useRef(null);
 
-  // ✅ Inicializa Lenis + ScrollTrigger
   useEffect(() => {
     const lenis = initLenis();
 
@@ -49,7 +46,6 @@ export default function App() {
     };
   }, []);
 
-  // ✅ Modo oscuro durante carga + bloqueo scroll
   useEffect(() => {
     const html = document.documentElement;
     const body = document.body;
@@ -84,9 +80,6 @@ export default function App() {
         onDone={() => setLoading(false)}
       />
 
-      {/* Navbar opcional (descomenta si lo quieres activo) */}
-      {/* <Navbar /> */}
-
       {/* Navegación tipo pastillas */}
       <PillNav
         items={[
@@ -96,9 +89,9 @@ export default function App() {
           { label: "Proyectos", ariaLabel: "Ir a proyectos", link: "#projects" },
         ]}
         socialItems={[
-          { label: "Twitter", link: "https://twitter.com" },
-          { label: "GitHub", link: "https://github.com" },
-          { label: "LinkedIn", link: "https://linkedin.com" },
+          { label: "GitHub", link: "https://github.com/ozillo" },
+          { label: "LinkedIn", link: "https://www.linkedin.com/in/marcmateoprieto1990/" },
+          { label: "CodePen", link: "https://codepen.io/Marc-Mateo" },
         ]}
       />
 
@@ -114,12 +107,12 @@ export default function App() {
         </section>
 
         {/* === Sección Habilidades === */}
-        <section id="skills" className="section">
+        <section id="skills" className="section skills">
           <Skills />
         </section>
 
         {/* === Nueva Sección Showcase (Proyectos) === */}
-        <section id="projects" className="section">
+        <section id="projects" style={{ scrollMarginTop: "calc(var(--nav-height) + 16px)" }}>
           <Showcase />
         </section>
       </main>

@@ -1,8 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { gsap, ScrollTrigger } from '../../lib/gsap'; // ya lo tienes en /lib
+import { gsap, ScrollTrigger } from '../../lib/gsap';
 import './About.css';
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function About() {
   const containerRef = useRef(null);

@@ -1,123 +1,167 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef } from "react";
 import "./Showcase.css";
 import { gsap, ScrollTrigger } from "../../lib/gsap";
-import { SLIDES } from "../../data/projects"; // ← usa tus slides
+import { getLenis } from "../../lib/lenis";
+import { SLIDES } from "../../data/projects";
 
-gsap.registerPlugin(ScrollTrigger);
+const N = SLIDES.length;
 
-// Icono navegador (SVG inline, hereda currentColor)
-function BrowserIcon(props) {
+function ArrowIcon() {
   return (
-    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" {...props}>
-      <path
-        d="M4 4h16a2 2 0 0 1 2 2v3H2V6a2 2 0 0 1 2-2zm18 7H2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-7zM6 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5zm3 0a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5zm3 0a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z"
-        fill="currentColor"
-      />
+    <svg viewBox="0 0 16 16" width="14" height="14" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+      strokeLinejoin="round" aria-hidden="true">
+      <path d="M3 8h10M9 4l4 4-4 4" />
     </svg>
   );
 }
 
 export default function Showcase() {
-  const rootRef = useRef(null);
-  const trackRef = useRef(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const outerRef   = useRef(null);
+  const cubeRef    = useRef(null);
+  const panelRefs  = useRef([]);
+  const dotRefs    = useRef([]);
+  const counterRef = useRef(null);
 
-  // Detectar móvil (sin depender del padre)
-  useEffect(() => {
-    const mql = window.matchMedia("(max-width: 991px)");
-    const onChange = () => setIsMobile(mql.matches);
-    onChange();
-    mql.addEventListener?.("change", onChange);
-    return () => mql.removeEventListener?.("change", onChange);
-  }, []);
+  const scrollToProject = (idx) => {
+    const outer = outerRef.current;
+    if (!outer) return;
+    const outerTop = outer.getBoundingClientRect().top + window.scrollY;
+    const target   = outerTop + idx * window.innerHeight;
+    const lenis    = getLenis();
+    if (lenis) {
+      lenis.scrollTo(target, { duration: 1.4, easing: (t) => 1 - Math.pow(1 - t, 4) });
+    } else {
+      window.scrollTo({ top: target, behavior: "smooth" });
+    }
+  };
 
-  // Animación de entrada (compatible con Lenis + ScrollTrigger de tu App)
   useLayoutEffect(() => {
-    if (!rootRef.current) return;
+    const outer = outerRef.current;
+    const cube  = cubeRef.current;
+    if (!outer || !cube) return;
+
+    const panels = panelRefs.current.filter(Boolean);
+    const dots   = dotRefs.current.filter(Boolean);
+
+    gsap.set(panels.slice(1), { opacity: 0, y: 36 });
+
     const ctx = gsap.context(() => {
-      const cards = gsap.utils.toArray(".show-card");
-      gsap.set(cards, { y: 24, opacity: 0 });
-
-      ScrollTrigger.batch(cards, {
-        start: "top 85%",
-        onEnter: (batch) =>
-          gsap.to(batch, {
-            y: 0,
-            opacity: 1,
-            duration: 0.6,
-            ease: "power2.out",
-            stagger: 0.06,
-          }),
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: outer,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1.4,
+          onUpdate(self) {
+            const idx = Math.min(Math.round(self.progress * (N - 1)), N - 1);
+            dots.forEach((el, i) => el.classList.toggle("is-active", i === idx));
+            panels.forEach((el, i) => {
+              el.setAttribute("aria-hidden", i !== idx ? "true" : "false");
+              const cta = el.querySelector(".sc-cta");
+              if (cta) cta.setAttribute("tabindex", i !== idx ? "-1" : "0");
+            });
+            if (counterRef.current) {
+              counterRef.current.textContent = String(idx + 1).padStart(2, "0");
+            }
+          },
+        },
       });
 
-      rootRef.current.querySelectorAll("img").forEach((img) => {
-        if (img.complete) return;
-        img.addEventListener("load", () => ScrollTrigger.refresh(), { once: true });
-      });
-    }, rootRef);
+      tl.to(cube, { rotateY: -90 * (N - 1), ease: "none", duration: N - 1 }, 0);
 
-    setTimeout(() => ScrollTrigger.refresh(), 0);
+      for (let i = 0; i < N - 1; i++) {
+        const t = i + 0.3;
+        tl.to(panels[i],     { opacity: 0, y: -36, duration: 0.4 }, t);
+        tl.to(panels[i + 1], { opacity: 1, y: 0,   duration: 0.4 }, t);
+      }
+
+      setTimeout(() => ScrollTrigger.refresh(), 150);
+    }, outer);
+
     return () => ctx.revert();
   }, []);
 
-  // Flechas en móvil
-  const scrollLeft = () => {
-    trackRef.current?.scrollBy({ left: -Math.round(window.innerWidth * 0.7), behavior: "smooth" });
-  };
-  const scrollRight = () => {
-    trackRef.current?.scrollBy({ left: Math.round(window.innerWidth * 0.7), behavior: "smooth" });
-  };
-
   return (
-    <div className="showcase-v3" ref={rootRef}>
-      <header className="show-head">
-        <h2 className="show-title">Portafolio &amp; Proyectos Anteriores</h2>
-        <p className="show-sub">
-          He construido distintos proyectos para cubrir necesidades específicas de cada cliente.
-          Si quieres ver más ejemplos de mi trabajo además de los que aparecen aquí, ¡contáctame!
-        </p>
-      </header>
+    <div className="sc-outer" ref={outerRef} style={{ height: `${N * 100}vh` }}>
+      <div className="sc-sticky">
 
-      {isMobile ? (
-        <div className="show-mobile">
-          <button className="show-arrow" aria-label="Desplazar a la izquierda" onClick={scrollLeft}>‹</button>
-          <div className="show-track" ref={trackRef} role="list">
-            {SLIDES.map((item) => <Card key={item.id} item={item} mobile />)}
+        <span className="sc-section-label" aria-hidden="true">Proyectos</span>
+
+        {/* Side nav dots */}
+        <nav className="sc-nav" aria-label="Navegar entre proyectos">
+          {SLIDES.map((_, i) => (
+            <button
+              key={i}
+              ref={(el) => (dotRefs.current[i] = el)}
+              className={`sc-dot${i === 0 ? " is-active" : ""}`}
+              aria-label={`Ir al proyecto ${i + 1}: ${SLIDES[i].name}`}
+              onClick={() => scrollToProject(i)}
+            />
+          ))}
+        </nav>
+
+        {/* Main scene */}
+        <div className="sc-scene">
+
+          {/* 3D Cube */}
+          <div className="sc-cube-wrap" aria-hidden="true">
+            <div className="sc-cube" ref={cubeRef}>
+              {SLIDES.map((item, i) => (
+                <div key={item.id} className={`sc-face sc-face--${i}`}>
+                  <img src={item.img} alt={item.name} loading="lazy" draggable="false" />
+                </div>
+              ))}
+            </div>
           </div>
-          <button className="show-arrow" aria-label="Desplazar a la derecha" onClick={scrollRight}>›</button>
-        </div>
-      ) : (
-        <div className="show-grid" role="list">
-          {SLIDES.map((item) => <Card key={item.id} item={item} />)}
-        </div>
-      )}
-    </div>
-  );
-}
 
-function Card({ item, mobile = false }) {
-  const { name, img, url, description } = item;
-  return (
-    <article className={`show-card ${mobile ? "is-mobile" : ""}`} role="listitem">
-      <div className="show-imgWrap">
-        <img src={img} alt={name} loading="lazy" />
+          {/* Info panels */}
+          <div className="sc-info">
+            {SLIDES.map((item, i) => (
+              <article
+                key={item.id}
+                ref={(el) => (panelRefs.current[i] = el)}
+                className="sc-panel"
+                aria-hidden={i !== 0 ? "true" : "false"}
+              >
+                <span className="sc-label">
+                  {item.category}
+                  <span className="sc-label-sep"> · </span>
+                  {item.year}
+                </span>
+                <h3 className="sc-name">{item.name}</h3>
+                <p className="sc-desc">{item.description}</p>
+                <div className="sc-stack" aria-label="Tecnologías utilizadas">
+                  {item.stack.map((tech) => (
+                    <span key={tech} className="sc-tech">{tech}</span>
+                  ))}
+                </div>
+                {item.url && (
+                  <a
+                    className="sc-cta"
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Visitar proyecto ${item.name}`}
+                    tabIndex={i !== 0 ? -1 : 0}
+                  >
+                    <span>Visitar proyecto</span>
+                    <ArrowIcon />
+                  </a>
+                )}
+              </article>
+            ))}
+          </div>
+        </div>
+
+        {/* HUD counter */}
+        <div className="sc-hud" aria-hidden="true">
+          <span className="sc-hud-current" ref={counterRef}>01</span>
+          <span className="sc-hud-sep"> / </span>
+          <span className="sc-hud-total">{String(N).padStart(2, "0")}</span>
+        </div>
+
       </div>
-      <div className="show-meta">
-        <h3 className="show-name">{name}</h3>
-        {description ? <p className="show-desc">{description}</p> : null}
-        {url ? (
-          <a
-            className="show-btn"
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Visitar el proyecto ${name}`}
-          >
-            <BrowserIcon />
-            <span>Visitar proyecto</span>
-          </a>
-        ) : null}
-      </div>
-    </article>
+    </div>
   );
 }

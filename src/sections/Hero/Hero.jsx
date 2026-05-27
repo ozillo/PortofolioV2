@@ -52,7 +52,7 @@ export default function Hero() {
           showUserInfo={true}
           enableTilt={true}
           enableMobileTilt={false}      // ponlo a true si quieres tilt en móvil (requiere HTTPS y permiso)
-          onContactClick={() => console.log('Contact clicked')}
+          onContactClick={() => window.location.href = 'mailto:marcmateo25@gmail.com'}
           // Opcional: apaga el “glow” de fondo si prefieres más sobrio:
           // showBehindGradient={false}
         />

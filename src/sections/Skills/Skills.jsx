@@ -38,10 +38,10 @@ const skills = [
 
 export default function Skills() {
   return (
-    <section id="skills" className="section skills" aria-label="Skills">
+    <div className="skills" role="region" aria-label="Skills">
       <div className="skills__wrap">
         <header className="skills__header">
-          <h2 className="skills__title">Hablidades &amp; Experiencia</h2>
+          <h2 className="skills__title">Habilidades &amp; Experiencia</h2>
 
           <p className="skills__lead">
           Mi principal área de especialización es el desarrollo front-end (del lado del cliente web).
@@ -54,7 +54,7 @@ export default function Skills() {
 
           <p className="skills__linkline">
             Visita mi{" "}
-            <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">
+            <a href="https://www.linkedin.com/in/marcmateoprieto1990/" target="_blank" rel="noreferrer noopener">
               LinkedIn
             </a>{" "}
             para mas detalles.
@@ -72,6 +72,6 @@ export default function Skills() {
           ))}
         </ul>
       </div>
-    </section>
+    </div>
   );
 }
