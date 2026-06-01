@@ -29,14 +29,21 @@
   /* Logo */
   .sm-logo {
     display: inline-flex; align-items: center; justify-content: center;
-    user-select: none; width: 40px; height: 40px;
-    border-radius: 12px;
+    user-select: none; height: 40px; padding: 0 14px;
+    border-radius: 9999px;
     background: var(--surface);
     border: 1px solid var(--border);
-    text-decoration: none; overflow: hidden;
+    text-decoration: none; overflow: hidden; white-space: nowrap;
   }
-  .sm-logo-img { display:block; height:100%; width:100%; object-fit:cover; }
-  .sm-logo-fallback { color: var(--fg); font-weight: 700; font-size: .9rem; letter-spacing: .5px; }
+  .sm-logo-img { display:block; height:100%; width:auto; object-fit:cover; }
+  .sm-logo-fallback {
+    color: var(--fg);
+    font-weight: 400;
+    font-size: .88rem;
+    letter-spacing: .01em;
+    user-select: none;
+  }
+  .sm-logo-fallback strong { font-weight: 700; }
   
   /* Acciones header */
   .sm-header-actions { display: inline-flex; align-items: center; gap: 8px; }

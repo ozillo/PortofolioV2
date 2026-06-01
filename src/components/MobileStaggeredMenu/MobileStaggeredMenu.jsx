@@ -270,7 +270,7 @@ export default function MobileStaggeredMenu({
           {logoUrl ? (
             <img src={logoUrl} alt="Logo" className="sm-logo-img" draggable={false} width={110} height={24} />
           ) : (
-            <span className="sm-logo-fallback">M</span>
+            <span className="sm-logo-fallback">Marc <strong>Mateo</strong></span>
           )}
         </a>
 

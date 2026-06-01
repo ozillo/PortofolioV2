@@ -1,0 +1,127 @@
+/* ══════════════════════════════════════════
+   IntroLoaderWillem
+   "Ma[imagen]rc" → expansión a pantalla completa → fade out
+══════════════════════════════════════════ */
+
+.wl-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--bg, #0b0b0f);
+  overflow: hidden;
+}
+
+.wl-loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  color: var(--fg, #eaeaf2);
+}
+
+/* ── Título centrado ── */
+.wl__h1 {
+  white-space: nowrap;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12.5em;
+  font-weight: 600;
+  line-height: 0.75;
+  position: relative;
+}
+
+.wl__h1-start {
+  display: flex;
+  justify-content: flex-end;
+  width: 0.82em;
+  overflow: hidden;
+}
+
+.wl__h1-end {
+  display: flex;
+  justify-content: flex-start;
+  width: 0.88em;
+  overflow: hidden;
+}
+
+.wl__letter {
+  display: block;
+  position: relative;
+}
+
+.wl__letter--bold {
+  font-weight: 700;
+}
+
+/* ── Cuadro central ── */
+.wl__box {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  width: 0;
+  position: relative;
+}
+
+.wl__box-inner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 1em;
+  height: 95%;
+  position: relative;
+}
+
+/* ── Imagen que crece ── */
+.wl__growing-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 0%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.wl__growing-image-wrap {
+  position: absolute;
+  width: 100%;
+  min-width: 1em;
+  height: 100%;
+}
+
+/* ── ProfileCard dentro del cuadro ── */
+.wl__card-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg, #0b0b0f);
+}
+
+/* La card mantiene su aspect-ratio, el fondo oscuro llena el resto */
+.wl__card-wrap .pc-card-wrapper {
+  flex-shrink: 0;
+}
+
+/* Desactiva el glow exterior para que no se vea raro recortado */
+.wl__card-wrap .pc-card-wrapper::before {
+  display: none;
+}
+
+/* ── Responsive ── */
+@media (max-width: 991px) {
+  .wl__h1 { font-size: 9em; }
+}
+
+@media (max-width: 767px) {
+  .wl__h1 { font-size: 5.5em; }
+}
+
+@media (max-width: 480px) {
+  .wl__h1 { font-size: 4em; }
+}

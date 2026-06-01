@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { initLenis } from "./lib/lenis";
 import { ScrollTrigger } from "./lib/gsap";
 
-import IntroLoaderRings from "./components/IntroLoaderRings/IntroLoaderRings";
+import IntroLoaderWillem from "./components/IntroLoaderWillem/IntroLoaderWillem";
 
 import Footer from "./components/Footer/Footer";
 import Hero from "./sections/Hero/Hero";
@@ -74,11 +74,7 @@ export default function App() {
   return (
     <>
       {/* Loader inicial */}
-      <IntroLoaderRings
-        show={loading}
-        duration={2000}
-        onDone={() => setLoading(false)}
-      />
+      {loading && <IntroLoaderWillem onDone={() => setLoading(false)} />}
 
       {/* Navegación tipo pastillas */}
       <PillNav

@@ -38,16 +38,23 @@
   }
   
   .pill-logo{
-    width: var(--nav-h); height: var(--nav-h);
-    border-radius: 50%;
+    height: var(--nav-h);
+    padding: 0 16px;
+    border-radius: 9999px;
     background: var(--base);
     border: 1px solid var(--border);
-    padding: 6px;
     display: inline-flex; align-items: center; justify-content: center;
-    text-decoration: none; overflow: hidden;
+    text-decoration: none; overflow: hidden; white-space: nowrap;
   }
-  .pill-logo img{ width:100%; height:100%; object-fit:cover; display:block; }
-  .pill-logo-text{ font-weight:700; color:var(--fg); font-size:.9rem; letter-spacing:.5px; }
+  .pill-logo img{ height:100%; width:auto; object-fit:cover; display:block; }
+  .pill-logo-text{
+    font-weight: 400;
+    color: var(--fg);
+    font-size: .88rem;
+    letter-spacing: .01em;
+    user-select: none;
+  }
+  .pill-logo-text strong{ font-weight: 700; }
   
   .pill-list{ list-style:none; display:flex; gap:var(--pill-gap); margin:0; padding:3px; height:100%; }
   .pill-list>li{ display:flex; height:100%; }

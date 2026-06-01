@@ -133,7 +133,9 @@ export default function PillNavDesktop({
           ref={logoElRef}
           onClick={(e) => { e.preventDefault(); scrollToHref(getHref(items[0]) || '#hero') }}
         >
-          {logo ? <img src={logo} alt={logoAlt} ref={logoImgRef}/> : <span className="pill-logo-text">M</span>}
+          {logo ? <img src={logo} alt={logoAlt} ref={logoImgRef}/> : (
+            <span className="pill-logo-text">Marc <strong>Mateo</strong></span>
+          )}
         </a>
 
         <div className="pill-nav-items">
