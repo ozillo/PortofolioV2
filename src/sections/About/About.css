@@ -36,6 +36,17 @@
   letter-spacing: 0.3px;
 }
 
+/* Tagline dinámico (TextType) */
+.about__tagline {
+  font-size: clamp(14px, 1.6vw, 20px);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-bottom: 1.5rem;
+  opacity: 0.6;
+  min-height: 1.6em;
+  display: block;
+}
+
 /* Texto */
 .about__text {
   font-size: clamp(15px, 1.4vw, 18px);
