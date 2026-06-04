@@ -1,8 +1,10 @@
 import { useLayoutEffect, useRef } from "react";
 import { gsap } from "../../lib/gsap";
-import ProfileCard from "../ProfileCard/ProfileCard";
-import avatar from "../../assets/marc.png";
 import "./IntroLoaderWillem.css";
+
+const COLS = 22;
+const ROWS = 12;
+const DOT_COUNT = COLS * ROWS;
 
 export default function IntroLoaderWillem({ onDone }) {
   const rootRef = useRef(null);
@@ -11,75 +13,99 @@ export default function IntroLoaderWillem({ onDone }) {
     const root = rootRef.current;
     if (!root) return;
 
-    const letters      = root.querySelectorAll(".wl__letter");
-    const box          = root.querySelectorAll(".wl__box");
-    const growingImage = root.querySelectorAll(".wl__growing-image");
-    const headingStart = root.querySelectorAll(".wl__h1-start");
-    const headingEnd   = root.querySelectorAll(".wl__h1-end");
+    const dotEls    = root.querySelectorAll(".al-dot");
+    const charEls   = root.querySelectorAll(".al-char");
+    const subtitleEl = root.querySelector(".al-subtitle-inner");
+
+    // Ocultar letras y subtítulo antes de que empiece el timeline
+    // (los tweens dentro de un timeline no aplican `from` de inmediato)
+    gsap.set(charEls, { yPercent: 115 });
+    gsap.set(subtitleEl, { yPercent: 100, opacity: 0 });
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
-        defaults: { ease: "expo.inOut" },
+        defaults: { ease: "expo.out" },
         onComplete: onDone,
       });
 
-      // Fase 1 — letras suben desde abajo
-      tl.from(letters, { yPercent: 100, stagger: 0.025, duration: 1.25 });
+      // Fase 1 — puntos aparecen en ripple desde el centro
+      tl.fromTo(
+        dotEls,
+        { scale: 0, opacity: 0 },
+        {
+          scale: 1,
+          opacity: 1,
+          duration: 0.5,
+          stagger: { each: 0.006, from: "center", grid: [ROWS, COLS] },
+        }
+      );
 
-      // Fase 2 — cuadro + card aparece + letras se separan
-      tl.fromTo(box,          { width: "0em" },  { width: "1em",     duration: 1.25 }, "< 1.25");
-      tl.fromTo(growingImage, { width: "0%" },   { width: "100%",    duration: 1.25 }, "<");
-      tl.fromTo(headingStart, { x: "0em" },      { x: "-0.05em",     duration: 1.25 }, "<");
-      tl.fromTo(headingEnd,   { x: "0em" },      { x: "0.05em",      duration: 1.25 }, "<");
+      // Fase 2 — puntos se encogen + letras suben simultáneamente
+      tl.to(
+        dotEls,
+        {
+          scale: 0,
+          opacity: 0,
+          duration: 0.45,
+          ease: "expo.in",
+          stagger: { each: 0.004, from: "center", grid: [ROWS, COLS] },
+        },
+        "+=0.1"
+      );
 
-      // Fase 3 — card + cuadro se expanden a pantalla completa
-      tl.to(growingImage, { width: "100vw", height: "100dvh", duration: 2 }, "< 1.25");
-      tl.to(box,          { width: "110vw", duration: 2 }, "<");
+      tl.to(
+        charEls,
+        { yPercent: 0, duration: 0.85, stagger: 0.05, ease: "expo.out" },
+        "<0.08"
+      );
 
-      // Fase 4 — fade out → revela el Hero
-      tl.to(root, { opacity: 0, duration: 0.65, ease: "power2.inOut" }, "< 1.6");
+      // Fase 3 — subtítulo sube
+      tl.to(
+        subtitleEl,
+        { yPercent: 0, opacity: 1, duration: 0.65 },
+        "-=0.4"
+      );
+
+      // Fase 4 — overlay se va a la izquierda (wipe reveal)
+      tl.to(
+        root,
+        { xPercent: -100, duration: 0.85, ease: "expo.inOut" },
+        "+=0.55"
+      );
     }, root);
 
     return () => ctx.revert();
   }, [onDone]);
 
   return (
-    <div className="wl-overlay" ref={rootRef}>
-      <div className="wl-loader">
-        <div className="wl__h1">
+    <div className="al-overlay" ref={rootRef}>
+      {/* Grid de puntos */}
+      <div className="al-grid" aria-hidden="true">
+        {Array.from({ length: DOT_COUNT }).map((_, i) => (
+          <span className="al-dot" key={i} />
+        ))}
+      </div>
 
-          {/* "M" regular — izquierda */}
-          <div className="wl__h1-start">
-            <span className="wl__letter">M</span>
+      {/* Nombre + subtítulo */}
+      <div className="al-content">
+        <div className="al-name">
+          <div className="al-name__row">
+            {"Marc".split("").map((ch, i) => (
+              <span className="al-char-wrap" key={`a-${i}`}>
+                <span className="al-char">{ch}</span>
+              </span>
+            ))}
           </div>
-
-          {/* Cuadro con ProfileCard */}
-          <div className="wl__box">
-            <div className="wl__box-inner">
-              <div className="wl__growing-image">
-                <div className="wl__growing-image-wrap">
-                  <div className="wl__card-wrap">
-                    <ProfileCard
-                      name="Marc Mateo"
-                      title="Frontend Developer"
-                      handle="marc-mateo"
-                      status="Online"
-                      contactText="Contacto"
-                      avatarUrl={avatar}
-                      showUserInfo={true}
-                      enableTilt={false}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className="al-name__row al-name__row--bold">
+            {"Mateo".split("").map((ch, i) => (
+              <span className="al-char-wrap" key={`b-${i}`}>
+                <span className="al-char">{ch}</span>
+              </span>
+            ))}
           </div>
-
-          {/* "M" bold — derecha */}
-          <div className="wl__h1-end">
-            <span className="wl__letter wl__letter--bold">M</span>
-          </div>
-
+        </div>
+        <div className="al-subtitle">
+          <span className="al-subtitle-inner">Frontend Developer</span>
         </div>
       </div>
     </div>
