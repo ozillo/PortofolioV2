@@ -1,92 +1,127 @@
 /* ══════════════════════════════════════════
-   IntroLoader — anime.js inspired
-   Grid ripple → name reveal → wipe exit
+   IntroLoaderWillem
+   "Ma[imagen]rc" → expansión a pantalla completa → fade out
 ══════════════════════════════════════════ */
 
-.al-overlay {
+.wl-overlay {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: #0b0b0f;
+  background: var(--bg, #0b0b0f);
   overflow: hidden;
-  will-change: transform;
 }
 
-/* ── Grid de puntos ── */
-.al-grid {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  grid-template-columns: repeat(22, 1fr);
-  grid-template-rows: repeat(12, 1fr);
-  pointer-events: none;
-}
-
-.al-dot {
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: #7c5cff;
-  place-self: center;
-  opacity: 0;
-}
-
-/* ── Contenido centrado ── */
-.al-content {
+.wl-loader {
   position: absolute;
   inset: 0;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  color: var(--fg, #eaeaf2);
+}
+
+/* ── Título centrado ── */
+.wl__h1 {
+  white-space: nowrap;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12.5em;
+  font-weight: 600;
+  line-height: 0.75;
+  position: relative;
+}
+
+.wl__h1-start {
+  display: flex;
+  justify-content: flex-end;
+  width: 0.82em;
+  overflow: hidden;
+}
+
+.wl__h1-end {
+  display: flex;
+  justify-content: flex-start;
+  width: 0.88em;
+  overflow: hidden;
+}
+
+.wl__letter {
+  display: block;
+  position: relative;
+}
+
+.wl__letter--bold {
+  font-weight: 700;
+}
+
+/* ── Cuadro central ── */
+.wl__box {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  width: 0;
+  position: relative;
+}
+
+.wl__box-inner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 1em;
+  height: 95%;
+  position: relative;
+}
+
+/* ── Imagen que crece ── */
+.wl__growing-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 0%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.wl__growing-image-wrap {
+  position: absolute;
+  width: 100%;
+  min-width: 1em;
+  height: 100%;
+}
+
+/* ── ProfileCard dentro del cuadro ── */
+.wl__card-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1.5rem;
-  pointer-events: none;
+  background: var(--bg, #0b0b0f);
 }
 
-/* ── Nombre ── */
-.al-name {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
-  line-height: 0.88;
+/* La card mantiene su aspect-ratio, el fondo oscuro llena el resto */
+.wl__card-wrap .pc-card-wrapper {
+  flex-shrink: 0;
 }
 
-.al-name__row {
-  display: flex;
-  font-size: clamp(4rem, 13vw, 11.5rem);
-  font-weight: 300;
-  letter-spacing: -0.03em;
-  color: #eaeaf2;
+/* Desactiva el glow exterior para que no se vea raro recortado */
+.wl__card-wrap .pc-card-wrapper::before {
+  display: none;
 }
 
-.al-name__row--bold {
-  font-weight: 800;
-  color: #7c5cff;
-  letter-spacing: -0.04em;
+/* ── Responsive ── */
+@media (max-width: 991px) {
+  .wl__h1 { font-size: 9em; }
 }
 
-/* Cada letra tiene su propio clip */
-.al-char-wrap {
-  display: inline-block;
-  overflow: hidden;
-  line-height: 1.08;
+@media (max-width: 767px) {
+  .wl__h1 { font-size: 5.5em; }
 }
 
-.al-char {
-  display: inline-block;
-}
-
-/* ── Subtítulo ── */
-.al-subtitle {
-  overflow: hidden;
-}
-
-.al-subtitle-inner {
-  display: block;
-  font-size: clamp(0.65rem, 1.4vw, 0.9rem);
-  font-weight: 500;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: #a7a7b3;
+@media (max-width: 480px) {
+  .wl__h1 { font-size: 4em; }
 }
