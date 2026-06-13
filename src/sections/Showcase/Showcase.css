@@ -1,18 +1,15 @@
 /* ═══════════════════════════════════════════
-   SHOWCASE — 3D Cube scroll-driven
+   SHOWCASE — 3D Cube button-driven, infinite
 ═══════════════════════════════════════════ */
 
-/* ── Scroll container ── */
 .sc-outer {
   width: 100%;
+  height: 100vh;
   position: relative;
 }
 
-/* ── Sticky viewport ── */
 .sc-sticky {
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,7 +41,6 @@
 /* ══════════════════════════
    3D Cube
 ══════════════════════════ */
-/* Wrapper that holds cube + lateral nav buttons on mobile */
 .sc-cube-area {
   flex: 0 0 auto;
   position: relative;
@@ -60,9 +56,42 @@
   perspective-origin: 50% 50%;
 }
 
-/* Mobile lateral buttons — hidden on desktop */
-.sc-mobile-btn {
-  display: none;
+/* ── Nav buttons — always visible on both desktop and mobile ── */
+.sc-nav-btn {
+  display: flex;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--surface) 80%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--fg);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  z-index: 2;
+}
+
+.sc-nav-btn--prev { left: -22px; }
+.sc-nav-btn--next { right: -22px; }
+
+.sc-nav-btn:hover {
+  background: var(--surface-strong, var(--surface));
+}
+
+.sc-nav-btn:active {
+  transform: translateY(-50%) scale(0.9);
+}
+
+.sc-nav-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 .sc-cube {
@@ -74,6 +103,8 @@
   will-change: transform;
 }
 
+/* Face uses CSS custom property for rotateY so JS can reposition it
+   without losing the translateZ set by --ctz */
 .sc-face {
   position: absolute;
   inset: 0;
@@ -81,6 +112,7 @@
   overflow: hidden;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  transform: rotateY(var(--face-ry, 0deg)) translateZ(var(--ctz));
 }
 
 .sc-face img {
@@ -90,9 +122,9 @@
   display: block;
 }
 
-.sc-face--0 { transform: rotateY(0deg)    translateZ(var(--ctz)); }
-.sc-face--1 { transform: rotateY(90deg)   translateZ(var(--ctz)); }
-.sc-face--2 { transform: rotateY(180deg)  translateZ(var(--ctz)); }
+.sc-face--0 { --face-ry: 0deg; }
+.sc-face--1 { --face-ry: 90deg; }
+.sc-face--2 { --face-ry: 180deg; }
 
 /* Dark edge on the depth sides of the cube */
 .sc-cube::before,
@@ -290,44 +322,8 @@
     padding-top: calc(var(--nav-height, 64px) + 24px);
   }
 
-  /* Lateral arrow buttons */
-  .sc-mobile-btn {
-    display: flex;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: color-mix(in oklab, var(--surface) 80%, transparent);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    color: var(--fg);
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background 0.2s ease, transform 0.15s ease, opacity 0.2s ease;
-    -webkit-tap-highlight-color: transparent;
-    z-index: 2;
-  }
-
-  .sc-mobile-btn--prev { left: -22px; }
-  .sc-mobile-btn--next { right: -22px; }
-
-  .sc-mobile-btn:active:not(:disabled) {
-    transform: translateY(-50%) scale(0.92);
-  }
-
-  .sc-mobile-btn:disabled {
-    opacity: 0.2;
-    cursor: default;
-  }
-
-  .sc-mobile-btn:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-  }
+  .sc-nav-btn--prev { left: 6px; }
+  .sc-nav-btn--next { right: 6px; }
 
   .sc-section-label {
     left: 50%;

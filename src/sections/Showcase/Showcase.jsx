@@ -1,7 +1,6 @@
 import { useLayoutEffect, useRef } from "react";
 import "./Showcase.css";
-import { gsap, ScrollTrigger } from "../../lib/gsap";
-import { getLenis } from "../../lib/lenis";
+import { gsap } from "../../lib/gsap";
 import { SLIDES } from "../../data/projects";
 
 const N = SLIDES.length;
@@ -29,87 +28,72 @@ function ChevronIcon({ dir }) {
 }
 
 export default function Showcase() {
-  const outerRef    = useRef(null);
-  const cubeRef     = useRef(null);
-  const panelRefs   = useRef([]);
-  const dotRefs     = useRef([]);
-  const counterRef  = useRef(null);
-  const prevBtnRef  = useRef(null);
-  const nextBtnRef  = useRef(null);
-  const currentIdxRef = useRef(0);
+  const cubeRef        = useRef(null);
+  const panelRefs      = useRef([]);
+  const dotRefs        = useRef([]);
+  const counterRef     = useRef(null);
+  const angleRef       = useRef(0);
+  const currentIdxRef  = useRef(0);
+  const isAnimatingRef = useRef(false);
 
-  const goPrev = () => scrollToProject(Math.max(0, currentIdxRef.current - 1));
-  const goNext = () => scrollToProject(Math.min(N - 1, currentIdxRef.current + 1));
+  const navigate = (dir) => {
+    if (isAnimatingRef.current) return;
+    isAnimatingRef.current = true;
 
-  const scrollToProject = (idx) => {
-    const outer = outerRef.current;
-    if (!outer) return;
-    const outerTop = outer.getBoundingClientRect().top + window.scrollY;
-    const target   = outerTop + idx * window.innerHeight;
-    const lenis    = getLenis();
-    if (lenis) {
-      lenis.scrollTo(target, { duration: 1.4, easing: (t) => 1 - Math.pow(1 - t, 4) });
-    } else {
-      window.scrollTo({ top: target, behavior: "smooth" });
-    }
-  };
-
-  useLayoutEffect(() => {
-    const outer = outerRef.current;
-    const cube  = cubeRef.current;
-    if (!outer || !cube) return;
-
+    const cube   = cubeRef.current;
+    const faces  = Array.from(cube.children);
     const panels = panelRefs.current.filter(Boolean);
     const dots   = dotRefs.current.filter(Boolean);
 
-    gsap.set(panels.slice(1), { opacity: 0, y: 36 });
+    const prevIdx  = currentIdxRef.current;
+    const newAngle = angleRef.current + (dir === "next" ? -90 : 90);
+    const newIdx   = ((prevIdx + (dir === "next" ? 1 : -1)) + N) % N;
 
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: outer,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 1.4,
-          onUpdate(self) {
-            const idx = Math.min(Math.round(self.progress * (N - 1)), N - 1);
-            currentIdxRef.current = idx;
-            dots.forEach((el, i) => el.classList.toggle("is-active", i === idx));
-            panels.forEach((el, i) => {
-              el.setAttribute("aria-hidden", i !== idx ? "true" : "false");
-              const cta = el.querySelector(".sc-cta");
-              if (cta) cta.setAttribute("tabindex", i !== idx ? "-1" : "0");
-            });
-            if (counterRef.current) {
-              counterRef.current.textContent = String(idx + 1).padStart(2, "0");
-            }
-            if (prevBtnRef.current) prevBtnRef.current.disabled = idx === 0;
-            if (nextBtnRef.current) nextBtnRef.current.disabled = idx === N - 1;
-          },
-        },
-      });
+    // Reposition target face so it aligns with the incoming cube angle
+    const faceLocalAngle = ((-newAngle % 360) + 360) % 360;
+    faces[newIdx].style.setProperty("--face-ry", `${faceLocalAngle}deg`);
 
-      tl.to(cube, { rotateY: -90 * (N - 1), ease: "none", duration: N - 1 }, 0);
+    gsap.to(cube, {
+      rotateY: newAngle,
+      duration: 0.75,
+      ease: "expo.inOut",
+      onComplete: () => { isAnimatingRef.current = false; },
+    });
 
-      for (let i = 0; i < N - 1; i++) {
-        const t = i + 0.3;
-        tl.to(panels[i],     { opacity: 0, y: -36, duration: 0.4 }, t);
-        tl.to(panels[i + 1], { opacity: 1, y: 0,   duration: 0.4 }, t);
-      }
+    gsap.to(panels[prevIdx], { opacity: 0, y: dir === "next" ? -36 : 36, duration: 0.35, ease: "power2.in" });
+    gsap.fromTo(
+      panels[newIdx],
+      { opacity: 0, y: dir === "next" ? 36 : -36 },
+      { opacity: 1, y: 0, duration: 0.4, ease: "power2.out", delay: 0.25 }
+    );
 
-      setTimeout(() => ScrollTrigger.refresh(), 150);
-    }, outer);
+    angleRef.current      = newAngle;
+    currentIdxRef.current = newIdx;
+    dots.forEach((el, i) => el.classList.toggle("is-active", i === newIdx));
+    if (counterRef.current) counterRef.current.textContent = String(newIdx + 1).padStart(2, "0");
+    panels.forEach((el, i) => {
+      el.setAttribute("aria-hidden", i !== newIdx ? "true" : "false");
+      const cta = el.querySelector(".sc-cta");
+      if (cta) cta.setAttribute("tabindex", i !== newIdx ? "-1" : "0");
+    });
+  };
 
-    return () => ctx.revert();
+  const goToIdx = (targetIdx) => {
+    if (targetIdx === currentIdxRef.current) return;
+    const forwardSteps = ((targetIdx - currentIdxRef.current) + N) % N;
+    navigate(forwardSteps <= N / 2 ? "next" : "prev");
+  };
+
+  useLayoutEffect(() => {
+    gsap.set(panelRefs.current.filter(Boolean).slice(1), { opacity: 0, y: 36 });
   }, []);
 
   return (
-    <div className="sc-outer" ref={outerRef} style={{ height: `${N * 100}vh` }}>
+    <div className="sc-outer">
       <div className="sc-sticky">
 
         <span className="sc-section-label" aria-hidden="true">Proyectos</span>
 
-        {/* Side nav dots */}
         <nav className="sc-nav" aria-label="Navegar entre proyectos">
           {SLIDES.map((_, i) => (
             <button
@@ -117,16 +101,21 @@ export default function Showcase() {
               ref={(el) => (dotRefs.current[i] = el)}
               className={`sc-dot${i === 0 ? " is-active" : ""}`}
               aria-label={`Ir al proyecto ${i + 1}: ${SLIDES[i].name}`}
-              onClick={() => scrollToProject(i)}
+              onClick={() => goToIdx(i)}
             />
           ))}
         </nav>
 
-        {/* Main scene */}
         <div className="sc-scene">
-
-          {/* 3D Cube + lateral nav buttons (mobile only) */}
           <div className="sc-cube-area">
+            <button
+              className="sc-nav-btn sc-nav-btn--prev"
+              aria-label="Proyecto anterior"
+              onClick={() => navigate("prev")}
+            >
+              <ChevronIcon dir="left" />
+            </button>
+
             <div className="sc-cube-wrap" aria-hidden="true">
               <div className="sc-cube" ref={cubeRef}>
                 {SLIDES.map((item, i) => (
@@ -136,26 +125,16 @@ export default function Showcase() {
                 ))}
               </div>
             </div>
+
             <button
-              ref={prevBtnRef}
-              className="sc-mobile-btn sc-mobile-btn--prev"
-              aria-label="Proyecto anterior"
-              disabled
-              onClick={goPrev}
-            >
-              <ChevronIcon dir="left" />
-            </button>
-            <button
-              ref={nextBtnRef}
-              className="sc-mobile-btn sc-mobile-btn--next"
+              className="sc-nav-btn sc-nav-btn--next"
               aria-label="Proyecto siguiente"
-              onClick={goNext}
+              onClick={() => navigate("next")}
             >
               <ChevronIcon dir="right" />
             </button>
           </div>
 
-          {/* Info panels */}
           <div className="sc-info">
             {SLIDES.map((item, i) => (
               <article
@@ -194,7 +173,6 @@ export default function Showcase() {
           </div>
         </div>
 
-        {/* HUD counter */}
         <div className="sc-hud" aria-hidden="true">
           <span className="sc-hud-current" ref={counterRef}>01</span>
           <span className="sc-hud-sep"> / </span>
