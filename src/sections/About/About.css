@@ -1,55 +1,115 @@
-/* === SECCIÓN ABOUT (centrada sí o sí) === */
+/* === SECCIÓN ABOUT === */
 
 :root {
-  --navbar-h: 80px; /* ajusta si tu navbar mide otra cosa */
+  --navbar-h: 80px;
 }
 
 .about {
   width: 100%;
   display: grid !important;
-  place-items: center !important;             /* centra horizontal y vertical */
+  place-items: center !important;
   min-height: calc(100vh - var(--navbar-h));
-  padding: 0 2rem;                            /* sin padding vertical que desplace */
+  padding: 6rem 2rem;
   background: var(--bg);
   color: var(--fg);
 }
 
 /* Contenedor principal */
 .about__container {
-  max-width: 900px;
-  width: min(900px, 100%);
-  margin-left: auto !important;               /* fuerza centrado incluso si el padre alinea a start */
-  margin-right: auto !important;
+  max-width: 720px;
+  width: min(720px, 100%);
+  margin-inline: auto !important;
   text-align: center;
   font-family: 'Poppins', sans-serif;
   will-change: transform, opacity;
-  justify-self: center !important;            /* por si el padre es grid */
+  justify-self: center !important;
   align-self: center !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+/* Eyebrow label — mismo estilo que skills__eyebrow */
+.about__eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
 /* Título */
 .about__title {
-  font-size: clamp(28px, 4vw, 56px);
+  font-size: clamp(32px, 5vw, 64px);
   font-weight: 800;
-  margin-bottom: 1.5rem;
-  line-height: 1.1;
-  letter-spacing: 0.3px;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+  margin: 0;
+  color: var(--fg);
 }
 
-/* Texto */
+/* Línea decorativa bajo el título con --accent */
+.about__title::after {
+  content: '';
+  display: block;
+  width: 2.5rem;
+  height: 3px;
+  background: var(--accent);
+  opacity: 0.5;
+  margin: 0.85rem auto 0;
+  border-radius: 2px;
+}
+
+/* Texto — strong con --accent como .word.accent en Hero */
 .about__text {
-  font-size: clamp(15px, 1.4vw, 18px);
-  line-height: 1.6;
-  opacity: 0.9;
-  max-width: 70ch;
-  margin: 0 auto;                             /* asegura centrado del párrafo */
+  font-size: clamp(15px, 1.35vw, 18px);
+  line-height: 1.75;
+  color: var(--fg);
+  opacity: 0.8;
+  max-width: 58ch;
+  margin: 0;
 }
 
-/* ===== Overrides contra estilos del contenedor padre (.section) ===== */
-/* Si tu App envuelve cada sección en <section id="about" class="section">,
-   estos resets neutralizan alineaciones a la izquierda. */
+.about__text strong {
+  color: var(--accent);
+  font-weight: 600;
+  opacity: 1;
+}
+
+/* Chips — mismo patrón que skills__card */
+.about__chips {
+  list-style: none;
+  padding: 0;
+  margin: 0.25rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+}
+
+.about__chip {
+  font-size: clamp(11px, 1vw, 13px);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 0.35em 0.9em;
+  background: color-mix(in oklab, var(--surface) 100%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  color: var(--fg);
+  transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+
+.about__chip:hover {
+  border-color: color-mix(in oklab, var(--accent) 30%, var(--border));
+  background: color-mix(in oklab, var(--surface) 65%, transparent);
+  color: var(--accent);
+}
+
+/* ===== Overrides contra estilos del contenedor padre ===== */
 #about.section {
-  display: block !important;                  /* evita grids/flex del contenedor global */
+  display: block !important;
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
@@ -62,12 +122,6 @@
   margin-right: auto !important;
 }
 
-/* Tema claro */
-html[data-theme='light'] .about {
-  background: var(--bg-light);
-  color: var(--fg-light);
-}
-
 /* Accesibilidad: reducir movimiento */
 @media (prefers-reduced-motion: reduce) {
   .about__container {
@@ -77,10 +131,33 @@ html[data-theme='light'] .about {
   }
 }
 
-/* Pequeño respiro en móvil si lo ves demasiado “pegado” */
+/* === MÓVIL === */
 @media (max-width: 768px) {
   .about {
-    padding: 6vh 1.5rem;
-    min-height: auto; /* en móvil no forzamos el alto completo */
+    min-height: 100dvh;
+    padding: 8rem 1.5rem 5rem;
+    align-content: center;
+  }
+
+  .about__container {
+    gap: 1rem;
+  }
+
+  .about__title {
+    font-size: clamp(36px, 9vw, 52px);
+  }
+
+  .about__text {
+    font-size: 16px;
+    line-height: 1.7;
+    max-width: 100%;
+  }
+
+  .about__chips {
+    gap: 0.5rem;
+  }
+
+  .about__chip {
+    font-size: 12px;
   }
 }

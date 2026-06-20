@@ -29,14 +29,32 @@ function ChevronIcon({ dir }) {
 
 export default function Showcase() {
   const cubeRef        = useRef(null);
+  const cubeWrapRef    = useRef(null);
   const panelRefs      = useRef([]);
   const dotRefs        = useRef([]);
   const counterRef     = useRef(null);
   const angleRef       = useRef(0);
   const currentIdxRef  = useRef(0);
   const isAnimatingRef = useRef(false);
+  const touchStartRef  = useRef(null); // { x, y } recorded on touchstart
+  const isDraggingRef  = useRef(false);
 
-  const navigate = (dir) => {
+  // Pre-position both adjacent faces so drag in either direction looks right
+  const prepareAdjacentFaces = () => {
+    const faces = Array.from(cubeRef.current.children);
+    const base  = angleRef.current;
+    const cur   = currentIdxRef.current;
+    const nextI = (cur + 1) % N;
+    const prevI = ((cur - 1) + N) % N;
+    if (nextI !== cur) {
+      faces[nextI].style.setProperty("--face-ry", `${((-(base - 90)) % 360 + 360) % 360}deg`);
+    }
+    if (prevI !== cur) {
+      faces[prevI].style.setProperty("--face-ry", `${((-(base + 90)) % 360 + 360) % 360}deg`);
+    }
+  };
+
+  const navigate = (dir, duration = 0.75) => {
     if (isAnimatingRef.current) return;
     isAnimatingRef.current = true;
 
@@ -49,22 +67,23 @@ export default function Showcase() {
     const newAngle = angleRef.current + (dir === "next" ? -90 : 90);
     const newIdx   = ((prevIdx + (dir === "next" ? 1 : -1)) + N) % N;
 
-    // Reposition target face so it aligns with the incoming cube angle
+    // Reposition target face to align with the incoming cube angle
     const faceLocalAngle = ((-newAngle % 360) + 360) % 360;
     faces[newIdx].style.setProperty("--face-ry", `${faceLocalAngle}deg`);
 
     gsap.to(cube, {
       rotateY: newAngle,
-      duration: 0.75,
-      ease: "expo.inOut",
+      duration,
+      ease: duration < 0.6 ? "expo.out" : "expo.inOut",
       onComplete: () => { isAnimatingRef.current = false; },
     });
 
-    gsap.to(panels[prevIdx], { opacity: 0, y: dir === "next" ? -36 : 36, duration: 0.35, ease: "power2.in" });
+    const panelDur = Math.min(duration * 0.5, 0.35);
+    gsap.to(panels[prevIdx], { opacity: 0, y: dir === "next" ? -36 : 36, duration: panelDur, ease: "power2.in" });
     gsap.fromTo(
       panels[newIdx],
       { opacity: 0, y: dir === "next" ? 36 : -36 },
-      { opacity: 1, y: 0, duration: 0.4, ease: "power2.out", delay: 0.25 }
+      { opacity: 1, y: 0, duration: panelDur + 0.05, ease: "power2.out", delay: panelDur * 0.7 }
     );
 
     angleRef.current      = newAngle;
@@ -86,6 +105,75 @@ export default function Showcase() {
 
   useLayoutEffect(() => {
     gsap.set(panelRefs.current.filter(Boolean).slice(1), { opacity: 0, y: 36 });
+
+    const cubeWrap = cubeWrapRef.current;
+    if (!cubeWrap) return;
+
+    let lockAxis = null; // null | "h" | "v" — determined on first move
+
+    const onTouchStart = (e) => {
+      if (isAnimatingRef.current) return;
+      const t = e.touches[0];
+      touchStartRef.current = { x: t.clientX, y: t.clientY };
+      isDraggingRef.current  = false;
+      lockAxis = null;
+      // Stop any running tween so drag starts from the real current position
+      gsap.killTweensOf(cubeRef.current);
+      prepareAdjacentFaces();
+    };
+
+    const onTouchMove = (e) => {
+      if (!touchStartRef.current) return;
+      const t      = e.touches[0];
+      const deltaX = t.clientX - touchStartRef.current.x;
+      const deltaY = t.clientY - touchStartRef.current.y;
+
+      // Determine horizontal vs vertical on first meaningful movement
+      if (!lockAxis) {
+        if (Math.abs(deltaX) < 5 && Math.abs(deltaY) < 5) return;
+        lockAxis = Math.abs(deltaX) >= Math.abs(deltaY) ? "h" : "v";
+      }
+
+      if (lockAxis !== "h") return; // vertical → let browser scroll
+      e.preventDefault();
+
+      isDraggingRef.current = true;
+      const rotDelta = (deltaX / (cubeWrap.offsetWidth || 300)) * -90;
+      gsap.set(cubeRef.current, { rotateY: angleRef.current + rotDelta });
+    };
+
+    const onTouchEnd = (e) => {
+      if (!touchStartRef.current) return;
+      const deltaX = (e.changedTouches[0]?.clientX ?? touchStartRef.current.x) - touchStartRef.current.x;
+      touchStartRef.current = null;
+
+      if (!isDraggingRef.current) return; // tap, not swipe — ignore
+      isDraggingRef.current = false;
+
+      if (Math.abs(deltaX) > 40) {
+        // Commit to the direction with a snappy duration
+        navigate(deltaX < 0 ? "next" : "prev", 0.45);
+      } else {
+        // Not enough distance — snap back to current face
+        isAnimatingRef.current = true;
+        gsap.to(cubeRef.current, {
+          rotateY: angleRef.current,
+          duration: 0.4,
+          ease: "expo.out",
+          onComplete: () => { isAnimatingRef.current = false; },
+        });
+      }
+    };
+
+    cubeWrap.addEventListener("touchstart", onTouchStart, { passive: true });
+    cubeWrap.addEventListener("touchmove",  onTouchMove,  { passive: false });
+    cubeWrap.addEventListener("touchend",   onTouchEnd,   { passive: true });
+
+    return () => {
+      cubeWrap.removeEventListener("touchstart", onTouchStart);
+      cubeWrap.removeEventListener("touchmove",  onTouchMove);
+      cubeWrap.removeEventListener("touchend",   onTouchEnd);
+    };
   }, []);
 
   return (
@@ -116,7 +204,7 @@ export default function Showcase() {
               <ChevronIcon dir="left" />
             </button>
 
-            <div className="sc-cube-wrap" aria-hidden="true">
+            <div className="sc-cube-wrap" ref={cubeWrapRef} aria-hidden="true">
               <div className="sc-cube" ref={cubeRef}>
                 {SLIDES.map((item, i) => (
                   <div key={item.id} className={`sc-face sc-face--${i}`}>
